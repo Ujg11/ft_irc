@@ -23,12 +23,33 @@ Server::~Server()
 {
 }
 
+//Iniciem el servidor i esperem per obtenir senyals
+//Mirem si algun nou client intenta conectar-se o bé un client registrat envia informació
 void Server::serverInit()
 {
-	this->port = 4444;
+	this->port = 4242;
 	serverSocket();
 	std::cout << "Server <" << socketFd << "> Connected" << std::endl;
 	std::cout << "Waitig connections..." << std::endl;
+
+	while (Server::signal == false)
+	{
+		//Cridem la funció poll per a tots els fds registrats
+		if ((poll(&fds[0], fds.size(), -1) == -1) && Server::signal == false)
+			throw (std::runtime_error("Error! poll() failed"));
+		for (size_t i = 0; i < fds.size(); i++)
+		{
+			//Comprobem si hi ha dades per llegir
+			if (fds[i].revents & POLLIN)
+			{
+				if (fds[i].fd == socketFd)
+					acceptNewClient();
+				else
+					recieveNewData(fds[i].fd);
+			}
+		}
+	}
+	closeFds();
 }
 
 //Creem el socket del servidor per poder escoltar i aceptar conexions entrants
@@ -72,6 +93,13 @@ void Server::serverSocket()
 
 void Server::acceptNewClient()
 {
+	Client				client;
+	struct sockaddr_in	cliadd;
+	struct pollfd		newPoll;
+	socklen_t	len = sizeof(cliadd);
+
+	
+
 
 }
 
@@ -84,7 +112,7 @@ void Server::recieveNewData(int fd)
 void Server::signalHandler(int signum)
 {
 	(void)signum;
-	std::cout << std::endl << "Signa Recieved!" << std::endl;
+	std::cout << std::endl << "Signal Recieved!" << std::endl;
 	Server::signal = true; //Signal true per parar el servidor
 }
 
