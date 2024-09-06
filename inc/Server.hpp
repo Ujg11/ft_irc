@@ -22,6 +22,7 @@
 # include <arpa/inet.h> //inet_ntoa()
 # include <poll.h> //poll()
 # include <csignal> //signal()
+# include <cstring>
 
 # include "../inc/Client.hpp"
 

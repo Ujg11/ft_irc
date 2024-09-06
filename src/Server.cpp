@@ -94,19 +94,49 @@ void Server::serverSocket()
 void Server::acceptNewClient()
 {
 	Client				client;
-	struct sockaddr_in	cliadd;
+	struct sockaddr_in	cliAdd;
 	struct pollfd		newPoll;
-	socklen_t	len = sizeof(cliadd);
+	socklen_t	len = sizeof(cliAdd);
+	int			cliFd = accept(socketFd, (sockaddr *)&(cliAdd), &len); //Acceptem el nou client
 
-	
+	if (cliFd == -1)
+	{
+		std::cout << "Accept function failed" << std::endl;
+		return ;
+	}
+	if (fcntl(cliFd, F_SETFL, O_NONBLOCK) == -1) //Fem que sigui no bloquejant
+	{
+		std::cout << "fcntl() function in acceptClient() failed" << std::endl;
+		return ;
+	}
+	newPoll.fd = cliFd;
+	newPoll.events = POLLIN;
+	newPoll.revents = 0;
 
-
+	client.setFd(cliFd);
+	client.setIP(inet_ntoa(cliAdd.sin_addr));
+	clients.push_back(client); //Afegim el client al vector
+	fds.push_back(newPoll);
+	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl; 
 }
 
 //Rebem informacio d'un client ja registrat
 void Server::recieveNewData(int fd)
 {
-	
+	char	buffer[1024];
+	ssize_t	bytes;
+
+	memset(buffer, 0, sizeof(buffer));
+	bytes = recv(fd, buffer, sizeof(buffer) -1, 0);//La funcio llegeix del fd i ho posa a buffer. El tamany indicat
+	if (bytes <= 0)
+	{
+		std::cout << "Client whith fd <" << fd << "> disconnected" << std::endl;
+		clearClient(fd);
+		close(fd);
+		return ;
+	}
+	buffer[bytes] = '\0';
+	std::cout << "Data from client with fd <" << fd << "> recieved" << std::endl;
 }
 
 void Server::signalHandler(int signum)

@@ -21,6 +21,7 @@ int main()
         signal(SIGINT, Server::signalHandler);
         signal(SIGQUIT, Server::signalHandler);
         server.serverInit();
+    
     }
     catch(const std::exception& e)
     {
