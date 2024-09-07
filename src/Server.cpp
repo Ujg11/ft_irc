@@ -25,9 +25,10 @@ Server::~Server()
 
 //Iniciem el servidor i esperem per obtenir senyals
 //Mirem si algun nou client intenta conectar-se o bé un client registrat envia informació
-void Server::serverInit()
+void Server::serverInit(int port, std::string passwd)
 {
-	this->port = 4242;
+	this->port = port;
+	this->password = passwd;
 	serverSocket();
 	std::cout << "Server <" << socketFd << "> Connected" << std::endl;
 	std::cout << "Waitig connections..." << std::endl;
@@ -133,6 +134,7 @@ void Server::recieveNewData(int fd)
 		std::cout << "Client whith fd <" << fd << "> disconnected" << std::endl;
 		clearClient(fd);
 		close(fd);
+		//Borrar el client dels canals, de la llista de clients i de la llista d'fds
 		return ;
 	}
 	buffer[bytes] = '\0';

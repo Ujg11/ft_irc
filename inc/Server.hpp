@@ -29,17 +29,18 @@
 class Server
 {
 	private:
-		int port; //port del servidor
-		int socketFd;
-		static bool signal;
+		int			port; //port del servidor
+		int			socketFd;
+		static bool	signal;
 		std::vector<Client> clients;
 		std::vector<struct pollfd> fds; //Vector de pollfd
+		std::string	password;
 	
 	public:
 		Server();
 		~Server();
 		
-		void serverInit();
+		void serverInit(int port, std::string passwd);
 		void serverSocket();
 		void acceptNewClient();
 		void recieveNewData(int fd);

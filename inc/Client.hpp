@@ -28,6 +28,8 @@ class Client
 	private:
 		int fd;
 		std::string ip;
+		std::string nickname;
+		std::string username;
 	
 	public:
 		Client();
@@ -36,5 +38,6 @@ class Client
 		int getFd() const;
 		void setFd(int fd);
 		void setIP(std::string ip);
+		std::string getNickname();
+		std::string getUsername();
 };
-

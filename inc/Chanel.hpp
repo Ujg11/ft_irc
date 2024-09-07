@@ -1,48 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.cpp                                         :+:      :+:    :+:   */
+/*   Chanel.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/03 11:20:50 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/03 15:08:03 by ojimenez         ###   ########.fr       */
+/*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
+/*   Updated: 2024/09/07 16:23:57 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Client.hpp"
+#pragma once
 
-Client::Client()
+# include "Client.hpp"
+# include "Server.hpp"
+
+class Chanel
 {
-	
+	private:
+		std::string name;
+		std::vector<Client> clients;
+		
+	public:
+		Chanel();
+		Chanel(std::string name);
+		~Chanel();
+
+		void removeClient(int fd);
+		bool addClient(Client c);
+};
+
+Chanel::Chanel()
+{
 }
 
-Client::~Client()
-{
-	
-}
-
-int Client::getFd() const
-{
-	return (this->fd);
-}
-
-void Client::setFd(int fd)
-{
-	this->fd = fd;
-}
-
-void Client::setIP(std::string ip)
-{
-	this->ip = ip;
-}
-
-std::string Client::getNickname()
-{
-	return (this->nickname);
-}
-
-std::string Client::getUsername()
-{
-	return (this->username);
+Chanel::~Chanel()
+{   
 }
