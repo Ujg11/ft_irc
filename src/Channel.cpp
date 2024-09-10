@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Chanel.cpp                                         :+:      :+:    :+:   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/07 16:24:34 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:08:31 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Chanel.hpp"
+#include "../inc/Channel.hpp"
 
-Chanel::Chanel()
+Channel::Channel(std::string name)
 {
     this->name = name;
 }
 
-Chanel::Chanel(std::string name)
-{
-    this->name = name;
-}
-
-Chanel::~Chanel()
+Channel::~Channel()
 {   
 }
 
-void Chanel::removeClient(int fd)
+void Channel::removeClient(int fd)
 {
     for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
     {
@@ -38,7 +33,7 @@ void Chanel::removeClient(int fd)
     }
 }
 
-bool Chanel::addClient(Client c)
+bool Channel::addClient(Client c)
 {
     for (std::vector<Client>::iterator it = clients.begin(); it  != clients.end(); ++it)
     {
@@ -47,4 +42,14 @@ bool Chanel::addClient(Client c)
     }
     clients.push_back(c);
     return (true);
+}
+
+const std::vector<Client> Channel::getClients() const
+{
+    return (clients);
+}
+
+std::string Channel::getName()
+{
+    return (name);
 }

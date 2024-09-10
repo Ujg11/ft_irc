@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/03 15:19:18 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:37:10 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ void Server::serverSocket()
 	newPoll.events = POLLIN; //Fem que poll() monitoreji el socket per veure si hi ha dades entrants
 	newPoll.revents = 0; //Aquest camp sera modificat per poll() per indicar events
 	fds.push_back(newPoll); //Afegim la estructura al vector de fds que monitoreja poll() 
-	
 }
 
 void Server::acceptNewClient()
@@ -113,12 +112,126 @@ void Server::acceptNewClient()
 	newPoll.fd = cliFd;
 	newPoll.events = POLLIN;
 	newPoll.revents = 0;
+	fds.push_back(newPoll);
 
+	if (!newClientRequest(client, cliFd))
+	{
+		clearClient(cliFd);
+		close(cliFd);
+		return ;
+	}
 	client.setFd(cliFd);
 	client.setIP(inet_ntoa(cliAdd.sin_addr));
 	clients.push_back(client); //Afegim el client al vector
-	fds.push_back(newPoll);
-	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl; 
+	//fds.push_back(newPoll);
+	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl;
+}
+
+bool Server::newClientRequest(Client &client, int cliFd)
+{
+	char buffer[1024];
+	std::string pw = "Please, insert the correct password: ";
+	std::string nik = "Congratulations, password is correct.\nNikname: ";
+	std::string incorrectPw = "Sorry, the password is incorrect :(";
+	std::string incorrectNik = "The nickname is in use or empty, please try again: ";
+	std::string name = "User name: ";
+	std::string incorrectName = "Incorrect or empty name, only characters please.\nUser Name: ";
+
+	send(cliFd, pw.c_str(), pw.size(), 0);
+	std::string pwRecieved = read_message(cliFd);
+	if (pwRecieved.empty())
+	{
+		close(cliFd);
+		return (false);
+	}
+	if (pwRecieved != this->password)
+	{
+		send(cliFd, incorrectPw.c_str(), incorrectPw.size(), 0);
+		close(cliFd);
+		return false;
+	}
+	send(cliFd, nik.c_str(), nik.size(), 0);
+	std::string nickname = read_message(cliFd);
+	while (!isNicknameValid(nickname))
+	{
+		send(cliFd, incorrectNik.c_str(), incorrectNik.size(), 0);
+		nickname = read_message(cliFd);
+		if (nickname.empty())
+		{
+			close(cliFd);
+			return (false);
+		}
+	}
+	client.setNickname(nickname);
+	send(cliFd, name.c_str(), name.size(), 0);
+	std::string username = read_message(cliFd);
+	while (!isNameValid(username))
+	{
+		send(cliFd, incorrectName.c_str(), incorrectName.size(), 0);
+		username = read_message(cliFd);
+		if (username.empty())
+		{
+			close(cliFd);
+			return (false);
+		}
+	}
+	client.setUsername(username);
+	return (true);
+}
+
+std::string Server::read_message(int fd)
+{
+	std::string message = "";
+	char buffer[1024];
+	ssize_t bytes;
+
+	memset(buffer, 0, sizeof(buffer));
+	while (!strstr(buffer, "\n"))
+	{
+		memset(buffer, 0, sizeof(buffer));
+		bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+		if (bytes < 0)
+		{
+			if (errno != EWOULDBLOCK && errno != EAGAIN)
+			{
+				std::cerr << "Error in recv() function. Client with fd <" << fd << "> disconnected." << std::endl;
+				return "";
+			}
+		}
+		else if (bytes == 0)
+		{
+			std::cout << "Client with fd <" << fd << "> disconnected" << std::endl;
+			return "";
+		}
+		buffer[bytes] = '\0';
+		message.append(buffer);
+	}
+	message.erase(message.size() - 1);
+	return (message);
+}
+
+bool Server::isNameValid(std::string name)
+{
+	if (name.empty())
+		return (false);
+	for (int i = 0; i < name.size(); i++)
+	{
+		if (isdigit(name[i]) || !isalpha(name[i]))
+			return (false);
+	}
+	return (true);
+}
+
+bool Server::isNicknameValid(std::string n)
+{
+	if (n.empty())
+		return (false);
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->getNickname() == n)
+			return (false);
+	}
+	return (true);
 }
 
 //Rebem informacio d'un client ja registrat

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/03 15:07:50 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:33:47 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,12 @@ class Server
 		void serverSocket();
 		void acceptNewClient();
 		void recieveNewData(int fd);
-
+		bool newClientRequest(Client &client, int cliFd);
 		static void signalHandler(int signum);
-		
 		void closeFds();
 		void clearClient(int fd);
-		
+		bool isNicknameValid(std::string n);
+		bool isNameValid(std::string name);
+		std::string read_message(int fd);
 };
 

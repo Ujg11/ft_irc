@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:20:50 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/03 15:08:03 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:40:23 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,22 @@ std::string Client::getNickname()
 	return (this->nickname);
 }
 
+void Client::setUsername(std::string name)
+{
+	this->username = name;
+}
+
 std::string Client::getUsername()
 {
 	return (this->username);
+}
+
+void Client::setNickname(std::string nik)
+{
+	this->nickname = nik;
+}
+
+std::string Client::getIp()
+{
+	return (this->ip);
 }

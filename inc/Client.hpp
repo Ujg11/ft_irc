@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:06:59 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/03 12:22:03 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:39:44 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,13 @@ class Client
 		Client();
 		~Client();
 		
-		int getFd() const;
 		void setFd(int fd);
 		void setIP(std::string ip);
+		void setNickname(std::string nik);
+		void setUsername(std::string name);
+		
+		int getFd() const;
 		std::string getNickname();
 		std::string getUsername();
+		std::string getIp();
 };
