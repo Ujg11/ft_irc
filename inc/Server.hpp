@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/10 16:33:47 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:55:57 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@
 # include <poll.h> //poll()
 # include <csignal> //signal()
 # include <cstring>
+# include <sstream>
 
 # include "../inc/Client.hpp"
+# include "../inc/Channel.hpp"
 
 class Server
 {
@@ -35,6 +37,7 @@ class Server
 		std::vector<Client> clients;
 		std::vector<struct pollfd> fds; //Vector de pollfd
 		std::string	password;
+		std::vector<Channel> channels;
 	
 	public:
 		Server();
@@ -51,5 +54,12 @@ class Server
 		bool isNicknameValid(std::string n);
 		bool isNameValid(std::string name);
 		std::string read_message(int fd);
+		void processMessage(const std::string &sender, const std::string &bigMessage);
+		void handlePrivMessag(const std::string &sender, const std::string &reciever, const std::string &message);
+		void handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message);
+		bool isExistentChannel(const std::string &name);
+		//Channel findChannel(const std::string &name);
+		void kickClientFromChannel(std::string name, std::string channel);
+		
 };
 

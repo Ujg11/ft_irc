@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/10 17:37:10 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:56:18 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ bool Server::newClientRequest(Client &client, int cliFd)
 	std::string incorrectNik = "The nickname is in use or empty, please try again: ";
 	std::string name = "User name: ";
 	std::string incorrectName = "Incorrect or empty name, only characters please.\nUser Name: ";
+	std::string success = "Conected correctly! Enjoy :)\n";
 
 	send(cliFd, pw.c_str(), pw.size(), 0);
 	std::string pwRecieved = read_message(cliFd);
@@ -176,6 +177,7 @@ bool Server::newClientRequest(Client &client, int cliFd)
 		}
 	}
 	client.setUsername(username);
+	send(cliFd, success.c_str(), success.size(), 0);
 	return (true);
 }
 
@@ -215,8 +217,8 @@ bool Server::isNameValid(std::string name)
 	if (name.empty())
 		return (false);
 	for (int i = 0; i < name.size(); i++)
-	{
-		if (isdigit(name[i]) || !isalpha(name[i]))
+	{		
+		if (!isspace(name[i]) && (isdigit(name[i]) || !isalpha(name[i])))
 			return (false);
 	}
 	return (true);
@@ -252,6 +254,12 @@ void Server::recieveNewData(int fd)
 	}
 	buffer[bytes] = '\0';
 	std::cout << "Data from client with fd <" << fd << "> recieved" << std::endl;
+	std::string message(buffer);
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->getFd() == fd)
+			processMessage(it->getNickname(), message);
+	}
 }
 
 void Server::signalHandler(int signum)
@@ -295,5 +303,94 @@ void Server::clearClient(int fd)
 			break ;
 		}
 	}
+	//ClearClientFromChannel
 }
+
+void Server::kickClientFromChannel(std::string name, std::string channel)
+{
+	
+}
+
+void Server::processMessage(const std::string &sender, const std::string &bigMessage)
+{
+	std::istringstream iss(bigMessage);
+	std::string order, target, message;
+
+	iss >> order >> target;
+	getline(iss, message);
+	if (order == "PRIVMSG")
+	{
+		if (target[0] == '#')
+			handleChannelMessage(sender, target, message);
+		else
+			handlePrivMessag(sender, target, message);
+	}
+}
+
+//Buscamos el destinatario del mensaje y lo enviamos
+//Si no lo encontramos mandamos el mensaje de error al emisor
+void Server::handlePrivMessag(const std::string &sender, const std::string &reciever, const std::string &message)
+{
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->getNickname() == reciever)
+		{
+			std::string fullMessage = sender + ": " + message + "\n";
+			send(it->getFd(), fullMessage.c_str(), fullMessage.size(), 0);
+			return ;
+		}
+	}
+	std::string err = "No such user with nickname < " + reciever + " >\n";
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->getNickname() == sender)
+		{
+			send(it->getFd(), err.c_str(), err.size(), 0);
+			return ;
+		}
+	}
+}
+
+void Server::handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message)
+{
+	if (!isExistentChannel(channel))
+	{
+		std::string err = "The channel < " + channel + " > don't exist";
+		for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+		{
+			if (it->getNickname() == sender)
+			{
+				send(it->getFd(), err.c_str(), err.size(), 0);
+				return ;
+			}
+		}
+	}
+	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+	{
+		if (it->getName() == channel)
+		{
+			std::vector<Client> channelClients = it->getClients();
+			std::string fullMessage = sender + ": " + message + "\n";
+			for (std::vector<Client>::iterator i = channelClients.begin(); i != channelClients.end(); ++i)
+			{
+				if (i->getNickname() != sender)
+					send(i->getFd(), fullMessage.c_str(), fullMessage.size(), 0);
+			}
+			return ;
+		}
+	}
+}
+
+bool Server::isExistentChannel(const std::string &name) 
+{
+	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+	{
+		if (it->getName() == name)
+			return (true);
+	}
+	return (false);
+}
+
+
+
 
