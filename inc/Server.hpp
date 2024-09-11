@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/11 13:55:57 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:05:25 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
+
+class Channel;
 
 class Server
 {
