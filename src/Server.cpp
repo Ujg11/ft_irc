@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/11 13:56:18 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:22:22 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void Server::serverInit(int port, std::string passwd)
 			}
 		}
 	}
+	deleteAllChannels();
 	closeFds();
 }
 
@@ -306,9 +307,46 @@ void Server::clearClient(int fd)
 	//ClearClientFromChannel
 }
 
-void Server::kickClientFromChannel(std::string name, std::string channel)
+Channel *Server::create_channel(const std::string &name, const std::string &key, Client *client)
 {
-	
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+	{
+		if ((*it)->getName() == name)
+			return (NULL);
+	}
+	Channel *c = new Channel(name, key, client);
+    if (c == NULL)
+    {
+        std::cerr << "Error: memory is full" << std::endl;
+        return NULL;
+    }
+	this->channels.push_back(c);
+	return (c);
+}
+
+void Server::deleteChannel(const std::string &name)
+{
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+    {
+        if ((*it)->getName() == name)
+        {
+            delete *it;
+            channels.erase(it);
+            std::cout << "Channel " << name << " correctly deleted" << std::endl;
+            return;
+        }
+    }
+    std::cerr << "Error: Channel don't found" << name << std::endl;
+}
+
+void Server::deleteAllChannels()
+{
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+    {
+        delete *it;
+    }
+    channels.clear();
+    std::cout << "All the channels correctly deleted" << std::endl;
 }
 
 void Server::processMessage(const std::string &sender, const std::string &bigMessage)
@@ -325,6 +363,18 @@ void Server::processMessage(const std::string &sender, const std::string &bigMes
 		else
 			handlePrivMessag(sender, target, message);
 	}
+
+	/*std::istringstream iss(bigMessage);
+    std::string command, target;
+    iss >> command >> target;
+
+    if (command == "KICK") {
+        Kick kickCommand;
+        kickCommand.execute(*this, target, findClient(sender), target);
+    } else if (command == "JOIN") {
+        Join joinCommand;
+        joinCommand.execute(*this, target, findClient(sender));
+    }*/
 }
 
 //Buscamos el destinatario del mensaje y lo enviamos
@@ -365,11 +415,11 @@ void Server::handleChannelMessage(const std::string &sender, const std::string &
 			}
 		}
 	}
-	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
-		if (it->getName() == channel)
+		if ((*it)->getName() == channel)
 		{
-			std::vector<Client> channelClients = it->getClients();
+			std::vector<Client> channelClients = (*it)->getClients();
 			std::string fullMessage = sender + ": " + message + "\n";
 			for (std::vector<Client>::iterator i = channelClients.begin(); i != channelClients.end(); ++i)
 			{
@@ -383,9 +433,9 @@ void Server::handleChannelMessage(const std::string &sender, const std::string &
 
 bool Server::isExistentChannel(const std::string &name) 
 {
-	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
-		if (it->getName() == name)
+		if ((*it)->getName() == name)
 			return (true);
 	}
 	return (false);

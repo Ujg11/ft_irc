@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/11 14:05:25 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:02:18 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Server
 		std::vector<Client> clients;
 		std::vector<struct pollfd> fds; //Vector de pollfd
 		std::string	password;
-		std::vector<Channel> channels;
+		std::vector<Channel *> channels;
 	
 	public:
 		Server();
@@ -61,7 +61,9 @@ class Server
 		void handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message);
 		bool isExistentChannel(const std::string &name);
 		//Channel findChannel(const std::string &name);
-		void kickClientFromChannel(std::string name, std::string channel);
 		
+		Channel *create_channel(const std::string &name, const std::string &key, Client *client);
+		void deleteChannel(const std::string &name);
+		void deleteAllChannels();
 };
 

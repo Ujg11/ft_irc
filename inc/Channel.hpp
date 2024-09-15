@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/11 14:02:02 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/15 19:21:21 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ class Channel
 {
 	private:
 		std::string name;
+		std::string key;
+		Client *admin;
 		std::vector<Client> clients;
 		
 	public:
-		Channel(std::string name);
+		Channel(std::string name, std::string key, Client *admin);
 		~Channel();
 
 		void removeClient(int fd);
