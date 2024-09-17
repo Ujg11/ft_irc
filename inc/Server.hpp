@@ -28,8 +28,9 @@
 
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
-#include "../inc/Command.hpp"
+# include "../inc/Command.hpp"
 # include "../inc/Quit.hpp"
+# include "../inc/Kick.hpp"
 
 class Channel;
 class Command;
