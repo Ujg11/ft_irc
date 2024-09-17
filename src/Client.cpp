@@ -57,7 +57,7 @@ void Client::setNickname(std::string nik)
 	this->nickname = nik;
 }
 
-std::string Client::getIp()
+std::string Client::getIp() // esto es igual a -> getHost
 {
 	return (this->ip);
 }

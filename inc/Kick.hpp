@@ -17,5 +17,7 @@
 class Kick: public Command
 {
     public:
+        std::string FindReason(std::vector<std::string> &args);
+        std::vector<std::string> SplitChannels(const std::string &channelList);
         void execute(Server &server, Client &c, std::vector<std::string> args);
 };
