@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/15 20:22:22 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/17 16:53:42 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,17 @@ bool Server::signal = false;
 Server::Server()
 {
 	this->socketFd = -1;
+	commands["QUIT"] = new Quit();
+	//commands["KICK"]
+	//commands["JOIN"]
 }
 
 Server::~Server()
 {
+	for (std::map<std::string, Command*>::iterator it = commands.begin(); it != commands.end(); ++it)
+	{
+		delete it->second;
+	}
 }
 
 //Iniciem el servidor i esperem per obtenir senyals
@@ -92,6 +99,20 @@ void Server::serverSocket()
 	fds.push_back(newPoll); //Afegim la estructura al vector de fds que monitoreja poll() 
 }
 
+//Rebem informacio d'un client ja registrat
+void Server::recieveNewData(int fd)
+{
+	
+	std::string message = read_message(fd);
+	std::cout << message << std::endl;
+	std::cout << "Data from client with fd <" << fd << "> recieved" << std::endl;
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->getFd() == fd)
+			processMessage(it->getNickname(), message);
+	}
+}
+
 void Server::acceptNewClient()
 {
 	Client				client;
@@ -114,7 +135,6 @@ void Server::acceptNewClient()
 	newPoll.events = POLLIN;
 	newPoll.revents = 0;
 	fds.push_back(newPoll);
-
 	if (!newClientRequest(client, cliFd))
 	{
 		clearClient(cliFd);
@@ -123,61 +143,69 @@ void Server::acceptNewClient()
 	}
 	client.setFd(cliFd);
 	client.setIP(inet_ntoa(cliAdd.sin_addr));
-	clients.push_back(client); //Afegim el client al vector
-	//fds.push_back(newPoll);
+	clients.push_back(client);
 	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl;
 }
 
 bool Server::newClientRequest(Client &client, int cliFd)
 {
-	char buffer[1024];
-	std::string pw = "Please, insert the correct password: ";
-	std::string nik = "Congratulations, password is correct.\nNikname: ";
 	std::string incorrectPw = "Sorry, the password is incorrect :(";
-	std::string incorrectNik = "The nickname is in use or empty, please try again: ";
-	std::string name = "User name: ";
-	std::string incorrectName = "Incorrect or empty name, only characters please.\nUser Name: ";
+	std::string incorrectNick = "Error! The nickname is in use or empty";
+	std::string incorrectName = "Incorrect or empty name, only characters please";
 	std::string success = "Conected correctly! Enjoy :)\n";
-
-	send(cliFd, pw.c_str(), pw.size(), 0);
-	std::string pwRecieved = read_message(cliFd);
-	if (pwRecieved.empty())
+	bool password = false;
+	bool nick = false;
+	bool uName = false;
+	std::string message;
+	
+	while (!password || !nick || !uName)
 	{
-		close(cliFd);
-		return (false);
-	}
-	if (pwRecieved != this->password)
-	{
-		send(cliFd, incorrectPw.c_str(), incorrectPw.size(), 0);
-		close(cliFd);
-		return false;
-	}
-	send(cliFd, nik.c_str(), nik.size(), 0);
-	std::string nickname = read_message(cliFd);
-	while (!isNicknameValid(nickname))
-	{
-		send(cliFd, incorrectNik.c_str(), incorrectNik.size(), 0);
-		nickname = read_message(cliFd);
-		if (nickname.empty())
-		{
-			close(cliFd);
+		message = read_message(cliFd);
+		if (message.empty())
 			return (false);
+		//Parsejem el missatge
+		std::istringstream iss(message);
+		std::string command;
+		iss >> command;
+		if (command == "CAP")
+			continue ;
+		else if (command == "PASS")
+		{
+			std::string psswd;
+			iss >> psswd;
+			if (psswd != this->password)
+			{
+				send(cliFd, incorrectPw.c_str(), incorrectPw.size(), 0);
+				return (false);
+			}
+			password = true;
+			std::cout << "Entra a PASS" << std::endl;
+		}
+		else if (command == "NICK")
+		{
+			std::string nickName, command2, userName;
+			iss >> nickName >> command2 >> userName;
+			if (!isNicknameValid(nickName))
+			{
+				send(cliFd, incorrectNick.c_str(), incorrectNick.size(), 0);
+				return (false);
+			}
+			client.setNickname(nickName);
+			nick = true;
+			std::cout << "Entra a NICK" << std::endl;
+			if (command2 == "USER")
+			{
+				std::cout << "Entra a USER" << std::endl;
+				if (!isNameValid(userName))
+				{
+					send(cliFd, incorrectName.c_str(), incorrectName.size(), 0);
+					return (false);
+				}
+				client.setUsername(userName);
+				uName = true;
+			}
 		}
 	}
-	client.setNickname(nickname);
-	send(cliFd, name.c_str(), name.size(), 0);
-	std::string username = read_message(cliFd);
-	while (!isNameValid(username))
-	{
-		send(cliFd, incorrectName.c_str(), incorrectName.size(), 0);
-		username = read_message(cliFd);
-		if (username.empty())
-		{
-			close(cliFd);
-			return (false);
-		}
-	}
-	client.setUsername(username);
 	send(cliFd, success.c_str(), success.size(), 0);
 	return (true);
 }
@@ -189,13 +217,13 @@ std::string Server::read_message(int fd)
 	ssize_t bytes;
 
 	memset(buffer, 0, sizeof(buffer));
-	while (!strstr(buffer, "\n"))
+	while (!strstr(buffer, "\r\n"))
 	{
 		memset(buffer, 0, sizeof(buffer));
 		bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 		if (bytes < 0)
 		{
-			if (errno != EWOULDBLOCK && errno != EAGAIN)
+			if (errno != EWOULDBLOCK/* && errno != EAGAIN*/)
 			{
 				std::cerr << "Error in recv() function. Client with fd <" << fd << "> disconnected." << std::endl;
 				return "";
@@ -235,32 +263,6 @@ bool Server::isNicknameValid(std::string n)
 			return (false);
 	}
 	return (true);
-}
-
-//Rebem informacio d'un client ja registrat
-void Server::recieveNewData(int fd)
-{
-	char	buffer[1024];
-	ssize_t	bytes;
-
-	memset(buffer, 0, sizeof(buffer));
-	bytes = recv(fd, buffer, sizeof(buffer) -1, 0);//La funcio llegeix del fd i ho posa a buffer. El tamany indicat
-	if (bytes <= 0)
-	{
-		std::cout << "Client whith fd <" << fd << "> disconnected" << std::endl;
-		clearClient(fd);
-		close(fd);
-		//Borrar el client dels canals, de la llista de clients i de la llista d'fds
-		return ;
-	}
-	buffer[bytes] = '\0';
-	std::cout << "Data from client with fd <" << fd << "> recieved" << std::endl;
-	std::string message(buffer);
-	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
-	{
-		if (it->getFd() == fd)
-			processMessage(it->getNickname(), message);
-	}
 }
 
 void Server::signalHandler(int signum)
@@ -352,16 +354,29 @@ void Server::deleteAllChannels()
 void Server::processMessage(const std::string &sender, const std::string &bigMessage)
 {
 	std::istringstream iss(bigMessage);
-	std::string order, target, message;
+	std::string order;
+	std::vector<std::string> args;
 
-	iss >> order >> target;
-	getline(iss, message);
-	if (order == "PRIVMSG")
+	iss >> order;
+	std::string arg;
+	while (iss >> arg)
+		args.push_back(arg);
+	/*if (order == "PRIVMSG")
 	{
 		if (target[0] == '#')
 			handleChannelMessage(sender, target, message);
 		else
 			handlePrivMessag(sender, target, message);
+	}*/
+	if (commands.find(order) != commands.end())
+	{
+		Client *c = findClient(sender);
+		if (c != NULL)
+			commands[order]->execute(*this, *c, args);
+	}
+	else
+	{
+		
 	}
 
 	/*std::istringstream iss(bigMessage);
@@ -441,6 +456,14 @@ bool Server::isExistentChannel(const std::string &name)
 	return (false);
 }
 
-
+Client *Server::findClient(std::string nick)
+{
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->getNickname() == nick) {
+            return &(*it);
+        }
+    }
+    return NULL;
+}
 
 

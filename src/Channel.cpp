@@ -6,15 +6,17 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/11 12:54:08 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/17 12:29:13 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Channel.hpp"
 
-Channel::Channel(std::string name)
+Channel::Channel(std::string name, std::string key, Client *admin)
 {
     this->name = "#" + name;
+    this->key = key;
+    this->admin = admin;
 }
 
 Channel::~Channel()

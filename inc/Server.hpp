@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/15 20:02:18 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/17 17:18:12 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # include <iostream>
 # include <vector>
+# include <map>
 # include <sys/socket.h> //socket()
 # include <sys/types.h> //socket()
 # include <netinet/in.h> //sockaddr_in
@@ -27,8 +28,11 @@
 
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
+#include "../inc/Command.hpp"
+# include "../inc/Quit.hpp"
 
 class Channel;
+class Command;
 
 class Server
 {
@@ -40,6 +44,7 @@ class Server
 		std::vector<struct pollfd> fds; //Vector de pollfd
 		std::string	password;
 		std::vector<Channel *> channels;
+		std::map<std::string, Command *> commands;
 	
 	public:
 		Server();
@@ -61,6 +66,7 @@ class Server
 		void handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message);
 		bool isExistentChannel(const std::string &name);
 		//Channel findChannel(const std::string &name);
+		Client *findClient(std::string nick);
 		
 		Channel *create_channel(const std::string &name, const std::string &key, Client *client);
 		void deleteChannel(const std::string &name);
