@@ -55,3 +55,52 @@ std::string Channel::getName()
 {
     return (name);
 }
+
+/* ANTHONY ↓: */
+
+bool Channel::isClient(const Client &client) const
+{
+    for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+    {
+        if (clients[i].getFd() == client.getFd())
+            return true; // El cliente esta en el canal.
+    }
+    return false; // El cliente no esta en el canal.
+}
+
+bool Channel::isOperator(const Client &client) const
+{
+    for (size_t i = 0; i < operators.size(); i++) // o poner ++i
+    {
+        if (operators[i].getFd() == client.getFd())
+            return true; // El cliente es un operador.
+    }
+    return false; // El cliente no es un operador.
+}
+
+bool Channel::removeClient(const Client &client)
+{
+    for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+    {
+        if (clients[i].getFd() == client.getFd())
+        {
+            clients.erase(clients.begin() + i); // Elimina el cliente del canal.
+            break;
+        }
+    }
+}
+
+bool Channel::isEmpty() const
+{
+    return clients.empty(); // Retorna true si no hay clientes en el canal.
+}
+
+/* NOTA:
+
+    . En estos 4 metodos que hice no hay variable operador y tampoco clients
+        tomar en cuenta eso y solucionar mas adelante.
+    . Tampoco hay getName, crearlo mas adelante.
+
+*/
+
+/* TERMINO LO DE ANTHONY ⬆ */

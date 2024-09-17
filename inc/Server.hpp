@@ -68,6 +68,14 @@ class Server
 		bool isExistentChannel(const std::string &name);
 		//Channel findChannel(const std::string &name);
 		Client *findClient(std::string nick);
+
+		/* ANTHONY ↓: */
+
+		Channel* getChannel(const std::string &channelName);
+		Client* getClientByName(const std::string &nickname);
+		void removeChannel(const std::string &channelName);
+
+		/* TERMINO LO DE ANTHONY ⬆ */
 		
 		Channel *create_channel(const std::string &name, const std::string &key, Client *client);
 		void deleteChannel(const std::string &name);

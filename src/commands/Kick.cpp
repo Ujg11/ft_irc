@@ -145,12 +145,33 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
     Cosas que no tenemos:
 
         . Funcion "sendError" -> ubicacion en "Funcion (kICK), linea 62".
-        . Funcion "getChannel" -> ubicacion linea 77.
-        . Funcion "isClient" -> ubicacion linea 85.
-        . Funcion "isOperator" -> ubicacion linea 92.
-        . Funcion "getClientByName" -> ubicacion linea 99.
-        . Funcion "broadcast" -> ubicacion linea 112 (no sabemos si es una funcion de una libreria o nuestra(entender)).
-        . Funcion "removeClient" -> ubicacion linea 115.
-        . Funcion "isEmpty" -> ubicacion linea 118.
-        . FUncion "removeChannel" -> ubicacion linea 120.
+        . Funcion "getChannel" -> ubicacion linea 77. ✅
+        . Funcion "isClient" -> ubicacion linea 85. ✅
+        . Funcion "isOperator" -> ubicacion linea 92. ✅
+        . Funcion "getClientByName" -> ubicacion linea 99. ✅
+        . Funcion "broadcast" -> ubicacion linea 112 (es una funcion nuestra, se llama sendMessage (Leer NOTA 2)).
+        . Funcion "removeClient" -> ubicacion linea 115. ✅
+        . Funcion "isEmpty" -> ubicacion linea 118. ✅
+        . Funcion "removeChannel" -> ubicacion linea 120. ✅
+
+        Los que tengan check verde, estan creados, solo hace falta comprobar que funcionan
+            correctamente.
+*/
+
+/* NOTA 2:
+
+    La funcion broadcast es lo que tenemos en la clase Message:
+
+        Ejemplo de broadcast:
+
+            void Channel::broadcast(const std::string &message)
+            {
+                for (size_t i = 0; i < clients.size(); ++i)
+                {
+                    // Enviar el mensaje a cada cliente en el canal
+                    send(clients[i].getFd(), message.c_str(), message.size(), 0);
+                }
+            }
+
+    El nuestro se encuentra en Message, pensar una manera de en la linea 112, usar nuestro broadcast
 */

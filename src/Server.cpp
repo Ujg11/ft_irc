@@ -467,3 +467,37 @@ Client *Server::findClient(std::string nick)
 }
 
 
+/* ANTHONY ↓: */
+
+Channel* Server::getChannel(const std::string &channelName)
+{
+	// Busca el canal por nombre
+	for (size_t i = 0; i < channels.size(); ++i) // o poner ++i
+	{
+		if (channels[i].getName() == channelName)
+			return &channels[i]; // Devuelve el puntero al canal si se encuentra
+	}
+	return nullptr; // Retorna nullptr si no se encuentra el canal
+}
+
+Client* Server::getClientByName(const std::string &nickname)
+{
+	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+	{
+		if (clients[i].getNickname() == nickname)
+			return &clients[i];
+	}
+	return nullptr;
+}
+
+void Server::removeChannel(const std::string &channelName)
+{
+	for (size_t i = 0; i < channels.size(); i++)// o poner ++i
+	{
+		if (channels[i].getName() == channelName)
+		{
+			channels.erase(channels.begin() + i); // Elimina el canal del servidor
+			break;
+		}
+	}
+}
