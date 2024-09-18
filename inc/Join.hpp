@@ -10,4 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 
+# include "Command.hpp"
+
+class Join : public Command
+{
+    public:
+        ~Join();
+        void execute(Server &server, Client &c, std::vector<std::string> args);
+};
