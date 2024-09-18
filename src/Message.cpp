@@ -16,6 +16,7 @@
 # define RPL_YOURHOST 2
 # define RPL_CREATED 3
 # define RPL_MYINFO 4
+# define ERR_NICKNAMEINUSE 433
 
 std::string Message::timeNow() const //funcion que es para el server y guardase el resultado en una variable
 {
@@ -51,6 +52,8 @@ std::string Message::getMessage(int code, Client &client) const
             return ":" + serverName + " 003 " + nickName + " :This server was created at " + dateTime + "\r\n";
         case RPL_MYINFO:
             return ":" + serverName + " 004 " + nickName + " :" + serverName + " " + serverVersion + " " + "\r\n"; // con tal que envie el mensaje al cliente, ta bien
+        /*case ERR_NICKNAMEINUSE: 433 (caso de oriol, hacer IMPORTANTE)
+            return*/ 
         default:
             return "NO RESPONSE FOUND";
     }

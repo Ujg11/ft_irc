@@ -13,10 +13,13 @@
 #pragma once
 
 # include "Command.hpp"
+# include "../Server.hpp"
 
 class Join : public Command
 {
     public:
-        ~Join();
+        void createNewChannel(Client &user, Server &server, const std::string &channelName, const std::string &password);
+        void handleExistingChannel(Client &user, Server &server, Channel *channel, const std::string &channelName, const std::string &password);
+        bool handleJoinChannel(Client &user, Server &server, const std::string &channelName, const std::string &password);
         void execute(Server &server, Client &c, std::vector<std::string> args);
 };

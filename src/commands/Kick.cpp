@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../inc/Kick.hpp"
+# include "../../inc/commands/Kick.hpp"
 
 /* FindReason: encuentra el motivo del Kick a partir de los argumentos. */
 std::string Kick::FindReason(std::vector<std::string> &args)

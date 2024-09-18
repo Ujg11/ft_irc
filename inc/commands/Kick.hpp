@@ -13,6 +13,7 @@
 # pragma once
 
 # include "Command.hpp"
+# include "../Server.hpp"
 
 class Kick: public Command
 {

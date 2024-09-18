@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "Command.hpp"
+# include "../../inc/commands/Join.hpp"
 
 void Join::createNewChannel(Client &user, Server &server, const std::string &channelName, const std::string &password)
 {
@@ -25,7 +25,7 @@ void Join::createNewChannel(Client &user, Server &server, const std::string &cha
     // Agregar al usuario y hacerlo operador(admin)
     newChannel->addAdmin(user);
     newChannel->addClient(user);
-    user.channelIsJoined.push_back(channelName);
+    user.channelsJoined.push_back(channelName);
 
     // Notificar a los usuarios del canal
     std::string response = ":" + user.getNickname() + " JOIN " + channelName + "\r\n";
@@ -131,3 +131,17 @@ void Join::execute(Server &server, Client &c, std::vector<std::string> args)
         }
     }
 }
+
+/* NOTAS:
+
+    . Averiguar que es channelIsJoined, ubicacion linea 28.
+    . Crear funcion IsInvitedOnly e IsInvited, ubicacion linea 43.
+    . Crear funcion IsFull, ubicacion linea 50.
+    . Crear funcion getKey, , ubicacion linea 57.
+    . Denuevo ver lo del broadcast, ubicacion linea 70.
+    . Crear funcion getTopic, ubicacion linea 73.
+    . Crear funcion getServerName, ubicacion linea 75.
+    . Crear la funcion getChannel, ubicacion linea 91. (lo tenemos comentado en el channel o message).
+    . Averiguar que es strTools, ubicacion linea 119.
+    . Crear la funcion stringSplit, ubicacion linea 119.
+*/
