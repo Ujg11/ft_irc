@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 14:03:43 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 18:11:15 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Server::Server()
 {
 	this->socketFd = -1;
 	commands["QUIT"] = new Quit();
+	commands["PASS"] = new Pass();
 	//commands["MODE"]
 	//commands["KICK"]
 	//commands["JOIN"]
@@ -30,6 +31,11 @@ Server::~Server()
 	{
 		delete it->second;
 	}
+}
+
+std::string Server::getPassword()
+{
+	return (this->password);
 }
 
 //Iniciem el servidor i esperem per obtenir senyals
@@ -62,7 +68,10 @@ void Server::serverInit(int port, std::string passwd)
 				processMessage(*findClient(fds[i].fd));
 			}
 			if (fds[i].revents & (POLLERR | POLLHUP))
+			{
 				close(fds[i].fd);
+				clearClient(fds[i].fd);
+			}
 		}
 	}
 	deleteAllChannels();
@@ -142,6 +151,59 @@ void Server::acceptNewClient()
 	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl;
 }
 
+std::vector<std::string> ft_split(const std::string &input, const std::string &delimiter)
+{
+	std::vector<std::string> result;
+	size_t start = 0;
+	size_t end = input.find(delimiter);
+
+	while (end != std::string::npos)
+	{
+		result.push_back(input.substr(start, end - start));
+		start = end + delimiter.length();
+		end = input.find(delimiter, start);
+	}
+	if (start < input.length())
+		result.push_back(input.substr(start));
+	return (result);
+}
+
+void Server::processMessage(Client &cliente)
+{
+	std::vector<std::string> commandsVec = ft_split(cliente.clientBuffer, "\r\n");
+	
+	for(size_t i = 0; i < commandsVec.size(); i++)
+	{
+		std::cout << "Entra al while" << std::endl;
+		std::istringstream iss(commandsVec[i]);
+		std::string order;
+		std::vector<std::string> args;
+
+		iss >> order;
+		std::string arg;
+		while (iss >> arg)
+			args.push_back(arg);
+		if (order == "CAP")
+		{
+			continue;
+		}
+		else if (commands.find(order) != commands.end())
+		{
+			std::cout << "Troba la comanda " << order << std::endl; 
+			Client *c = findClient(cliente.getFd());
+			if (c != NULL)
+				commands[order]->execute(*this, *c, args);
+		}
+	}
+	/*if (order == "PRIVMSG")
+		{
+			if (target[0] == '#')
+				handleChannelMessage(sender, target, message);
+			else
+				handlePrivMessag(sender, target, message);
+		}*/
+}
+
 /*bool Server::newClientRequest(Client &client, int cliFd)
 {
 	std::string success = "Conected correctly! Enjoy :)\n";
@@ -196,7 +258,6 @@ void Server::read_message(pollfd &polls)
 	ssize_t bytes;
 	int fd = polls.fd;
 	
-	std::cout << "Llega a read_message" << std::endl;
 	Client *c = findClient(polls.fd);
 	if (c == NULL)
 	{
@@ -204,7 +265,6 @@ void Server::read_message(pollfd &polls)
 		return ;
 	}
 	bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
-	std::cout << buffer << std::endl;
 	if (bytes <= 0)
 	{
 		polls.revents = POLLERR;
@@ -224,7 +284,7 @@ bool Server::isNameValid(std::string name)
 {
 	if (name.empty())
 		return (false);
-	for (int i = 0; i < name.size(); i++)
+	for (size_t i = 0; i < name.length(); i++)
 	{		
 		if (!isspace(name[i]) && (isdigit(name[i]) || !isalpha(name[i])))
 			return (false);
@@ -330,46 +390,6 @@ void Server::deleteAllChannels()
     std::cout << "All the channels correctly deleted" << std::endl;
 }
 
-void Server::processMessage(Client &cliente)
-{
-	std::istringstream iss(cliente.clientBuffer);
-	std::string order;
-	std::vector<std::string> args;
-
-	iss >> order;
-	std::string arg;
-	while (iss >> arg)
-		args.push_back(arg);
-	/*if (order == "PRIVMSG")
-	{
-		if (target[0] == '#')
-			handleChannelMessage(sender, target, message);
-		else
-			handlePrivMessag(sender, target, message);
-	}*/
-	if (commands.find(order) != commands.end())
-	{
-		Client *c = findClient(cliente.getFd());
-		if (c != NULL)
-			commands[order]->execute(*this, *c, args);
-	}
-	/*else
-	{
-		
-	}*/
-
-	/*std::istringstream iss(bigMessage);
-    std::string command, target;
-    iss >> command >> target;
-
-    if (command == "KICK") {
-        Kick kickCommand;
-        kickCommand.execute(*this, target, findClient(sender), target);
-    } else if (command == "JOIN") {
-        Join joinCommand;
-        joinCommand.execute(*this, target, findClient(sender));
-    }*/
-}
 
 //Buscamos el destinatario del mensaje y lo enviamos
 //Si no lo encontramos mandamos el mensaje de error al emisor

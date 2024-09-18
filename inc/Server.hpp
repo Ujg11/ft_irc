@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 13:19:51 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 17:46:42 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <iostream>
 # include <vector>
 # include <map>
+# include <string>
 # include <sys/socket.h> //socket()
 # include <sys/types.h> //socket()
 # include <netinet/in.h> //sockaddr_in
@@ -28,8 +29,9 @@
 
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
-# include "../inc/Command.hpp"
-# include "../inc/Quit.hpp"
+# include "../inc/commands/Command.hpp"
+# include "../inc/commands/Quit.hpp"
+# include "../inc/commands/Pass.hpp"
 //# include "../inc/Kick.hpp"
 
 class Channel;
@@ -50,6 +52,7 @@ class Server
 	public:
 		Server();
 		~Server();
+		std::string getPassword();
 		
 		void serverInit(int port, std::string passwd);
 		void serverSocket();
@@ -83,3 +86,4 @@ class Server
 		void deleteAllChannels();
 };
 
+std::vector<std::string> splitByDelimiter(const std::string &input, const std::string &delimiter);

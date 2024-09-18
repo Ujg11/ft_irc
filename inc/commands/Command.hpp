@@ -6,16 +6,17 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 15:13:01 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/17 17:13:19 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 17:08:32 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include "Client.hpp"
-# include "Server.hpp"
+# include "../Client.hpp"
+//# include "../Server.hpp"
 
 class Server;
+//class Client;
 
 class Command
 {

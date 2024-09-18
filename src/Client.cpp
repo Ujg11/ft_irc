@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:20:50 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 12:56:21 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 16:54:31 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 Client::Client()
 {
-	
+	this->hasPass = false;
+	this->hasNick = false;
+	this->hasNick = false;
+	this->hasLogin = false;
 }
 
 Client::~Client()
@@ -37,7 +40,7 @@ void Client::setIP(std::string ip)
 	this->ip = ip;
 }
 
-std::string Client::getNickname()
+std::string Client::getNickname() const
 {
 	return (this->nickname);
 }
@@ -47,7 +50,7 @@ void Client::setUsername(std::string name)
 	this->username = name;
 }
 
-std::string Client::getUsername()
+std::string Client::getUsername() const
 {
 	return (this->username);
 }
@@ -57,7 +60,12 @@ void Client::setNickname(std::string nik)
 	this->nickname = nik;
 }
 
-std::string Client::getIp() // esto es igual a -> getHost
+std::string Client::getIp() const // esto es igual a -> getHost
 {
 	return (this->ip);
+}
+
+std::string Client::getPrefix() const
+{
+	return (getNickname() + "!" + getUsername() + "@" + getIp());
 }

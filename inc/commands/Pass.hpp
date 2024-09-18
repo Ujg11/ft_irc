@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Quit.hpp                                           :+:      :+:    :+:   */
+/*   Pass.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/17 15:35:23 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 17:08:41 by ojimenez         ###   ########.fr       */
+/*   Created: 2024/09/18 16:07:55 by ojimenez          #+#    #+#             */
+/*   Updated: 2024/09/18 17:09:15 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@
 
 class Server;
 
-class Quit: public Command
+class Pass: public Command
 {
-    public:
-        void execute(Server &server, Client &c, std::vector<std::string> args);
+	public:
+		void execute(Server &server, Client &c, std::vector<std::string> args);
 };
-
