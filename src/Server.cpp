@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/17 16:53:42 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 10:45:41 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,10 @@ void Server::recieveNewData(int fd)
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
 	{
 		if (it->getFd() == fd)
+		{
 			processMessage(it->getNickname(), message);
+			return ;
+		}
 	}
 }
 
@@ -179,7 +182,6 @@ bool Server::newClientRequest(Client &client, int cliFd)
 				return (false);
 			}
 			password = true;
-			std::cout << "Entra a PASS" << std::endl;
 		}
 		else if (command == "NICK")
 		{
@@ -192,10 +194,8 @@ bool Server::newClientRequest(Client &client, int cliFd)
 			}
 			client.setNickname(nickName);
 			nick = true;
-			std::cout << "Entra a NICK" << std::endl;
 			if (command2 == "USER")
 			{
-				std::cout << "Entra a USER" << std::endl;
 				if (!isNameValid(userName))
 				{
 					send(cliFd, incorrectName.c_str(), incorrectName.size(), 0);
@@ -374,10 +374,11 @@ void Server::processMessage(const std::string &sender, const std::string &bigMes
 		if (c != NULL)
 			commands[order]->execute(*this, *c, args);
 	}
-	else
+	std::cout << "Surt del executee" << std::endl;
+	/*else
 	{
 		
-	}
+	}*/
 
 	/*std::istringstream iss(bigMessage);
     std::string command, target;
