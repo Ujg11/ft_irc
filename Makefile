@@ -12,7 +12,7 @@
 
 NAME = ircserv
 CPP = c++
-CPPFLAGS = -Wall -Werror -Wextra -std=c++98
+CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -I./inc
 RM = rm -rf
 CYAN = \033[96m
 MAGENTA = \033[35m
@@ -20,7 +20,7 @@ RED = \033[91m
 END_COLOR = \033[0m
 
 SRC = main.cpp Message.cpp Client.cpp Server.cpp Channel.cpp
-INC = Message.hpp Client.hpp Server.hpp Channel.hpp
+INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp 
 
 OBJECTS = $(SRC:.cpp=.o)
 

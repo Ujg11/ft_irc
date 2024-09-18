@@ -14,5 +14,5 @@
 
 void Join::execute(Server &server, Client &c, std::vector<std::string> args)
 {
-
+    
 }
