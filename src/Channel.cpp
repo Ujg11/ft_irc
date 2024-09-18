@@ -6,21 +6,21 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/17 12:29:13 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 11:04:49 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Channel.hpp"
 
-Channel::Channel(std::string name, std::string key, Client *admin)
+Channel::Channel(std::string name, std::string key, Client &admin)
 {
     this->name = "#" + name;
     this->key = key;
-    this->admin = admin;
+    addAdmin(admin);
 }
 
 Channel::~Channel()
-{   
+{
 }
 
 void Channel::removeClient(int fd)
@@ -58,6 +58,11 @@ std::string Channel::getName()
 
 /* ANTHONY ↓: */
 
+void Channel::addAdmin(const Client &c)
+{
+    admins.push_back(c);
+}
+
 bool Channel::isClient(const Client &client) const
 {
     for (size_t i = 0; i < clients.size(); i++) // o poner ++i
@@ -70,9 +75,9 @@ bool Channel::isClient(const Client &client) const
 
 bool Channel::isOperator(const Client &client) const
 {
-    for (size_t i = 0; i < operators.size(); i++) // o poner ++i
+    for (size_t i = 0; i < admins.size(); i++) // o poner ++i
     {
-        if (operators[i].getFd() == client.getFd())
+        if (admins[i].getFd() == client.getFd())
             return true; // El cliente es un operador.
     }
     return false; // El cliente no es un operador.

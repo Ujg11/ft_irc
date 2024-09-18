@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 10:45:41 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 10:50:15 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -475,10 +475,10 @@ Channel* Server::getChannel(const std::string &channelName)
 	// Busca el canal por nombre
 	for (size_t i = 0; i < channels.size(); ++i) // o poner ++i
 	{
-		if (channels[i].getName() == channelName)
-			return &channels[i]; // Devuelve el puntero al canal si se encuentra
+		if (channels[i]->getName() == channelName)
+			return channels[i]; // Devuelve el puntero al canal si se encuentra
 	}
-	return nullptr; // Retorna nullptr si no se encuentra el canal
+	return NULL; // Retorna nullptr si no se encuentra el canal
 }
 
 Client* Server::getClientByName(const std::string &nickname)
@@ -488,14 +488,14 @@ Client* Server::getClientByName(const std::string &nickname)
 		if (clients[i].getNickname() == nickname)
 			return &clients[i];
 	}
-	return nullptr;
+	return NULL;
 }
 
 void Server::removeChannel(const std::string &channelName)
 {
 	for (size_t i = 0; i < channels.size(); i++)// o poner ++i
 	{
-		if (channels[i].getName() == channelName)
+		if (channels[i]->getName() == channelName)
 		{
 			channels.erase(channels.begin() + i); // Elimina el canal del servidor
 			break;
