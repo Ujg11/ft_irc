@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 17:46:42 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 18:36:34 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,11 @@ class Server
 		int			port; //port del servidor
 		int			socketFd;
 		static bool	signal;
+		std::string serverName;
+		std::string	password;
+		
 		std::vector<Client> clients;
 		std::vector<struct pollfd> fds; //Vector de pollfd
-		std::string	password;
 		std::vector<Channel *> channels;
 		std::map<std::string, Command *> commands;
 	
@@ -53,6 +55,7 @@ class Server
 		Server();
 		~Server();
 		std::string getPassword();
+		std::string getServerName();
 		
 		void serverInit(int port, std::string passwd);
 		void serverSocket();

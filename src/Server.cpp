@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 18:11:15 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 18:38:35 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ bool Server::signal = false;
 Server::Server()
 {
 	this->socketFd = -1;
+	this->serverName = "LosVSCode bro";
 	commands["QUIT"] = new Quit();
 	commands["PASS"] = new Pass();
 	//commands["MODE"]
@@ -36,6 +37,11 @@ Server::~Server()
 std::string Server::getPassword()
 {
 	return (this->password);
+}
+
+std::string Server::getServerName()
+{
+	return (this->serverName);
 }
 
 //Iniciem el servidor i esperem per obtenir senyals
