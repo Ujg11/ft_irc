@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/17 17:18:12 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 13:19:51 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include "../inc/Channel.hpp"
 # include "../inc/Command.hpp"
 # include "../inc/Quit.hpp"
-# include "../inc/Kick.hpp"
+//# include "../inc/Kick.hpp"
 
 class Channel;
 class Command;
@@ -54,30 +54,31 @@ class Server
 		void serverInit(int port, std::string passwd);
 		void serverSocket();
 		void acceptNewClient();
-		void recieveNewData(int fd);
+		void recieveNewData(pollfd &polls);
 		bool newClientRequest(Client &client, int cliFd);
 		static void signalHandler(int signum);
 		void closeFds();
 		void clearClient(int fd);
 		bool isNicknameValid(std::string n);
 		bool isNameValid(std::string name);
-		std::string read_message(int fd);
-		void processMessage(const std::string &sender, const std::string &bigMessage);
+		void read_message(pollfd &polls);
+		void processMessage(Client &cliente);
 		void handlePrivMessag(const std::string &sender, const std::string &reciever, const std::string &message);
 		void handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message);
 		bool isExistentChannel(const std::string &name);
 		//Channel findChannel(const std::string &name);
 		Client *findClient(std::string nick);
+		Client *findClient(int fd);
 
 		/* ANTHONY ↓: */
 
-		Channel* getChannel(const std::string &channelName);
+		/*Channel* getChannel(const std::string &channelName);
 		Client* getClientByName(const std::string &nickname);
-		void removeChannel(const std::string &channelName);
+		void removeChannel(const std::string &channelName);*/
 
 		/* TERMINO LO DE ANTHONY ⬆ */
 		
-		Channel *create_channel(const std::string &name, const std::string &key, Client *client);
+		Channel *create_channel(const std::string &name, const std::string &key, Client &client);
 		void deleteChannel(const std::string &name);
 		void deleteAllChannels();
 };

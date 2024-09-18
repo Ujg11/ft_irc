@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 11:04:49 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 11:17:30 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool Channel::isOperator(const Client &client) const
     return false; // El cliente no es un operador.
 }
 
-bool Channel::removeClient(const Client &client)
+void Channel::removeClient(const Client &client)
 {
     for (size_t i = 0; i < clients.size(); i++) // o poner ++i
     {

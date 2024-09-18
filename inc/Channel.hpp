@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 11:04:27 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 11:17:36 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Channel
 
 		bool isClient(const Client &client) const;
 		bool isOperator(const Client &client) const;
-		bool removeClient(const Client &client);
+		void removeClient(const Client &client);
 		bool isEmpty() const;
 
 		/* TERMINO LO DE ANTHONY ⬆ */

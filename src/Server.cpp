@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 10:50:15 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 14:03:43 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ Server::Server()
 {
 	this->socketFd = -1;
 	commands["QUIT"] = new Quit();
+	//commands["MODE"]
 	//commands["KICK"]
 	//commands["JOIN"]
+	//commands["PART"]
 }
 
 Server::~Server()
@@ -53,8 +55,14 @@ void Server::serverInit(int port, std::string passwd)
 				if (fds[i].fd == socketFd)
 					acceptNewClient();
 				else
-					recieveNewData(fds[i].fd);
+					read_message(fds[i]);
 			}
+			if (fds[i].revents & POLLOUT)
+			{
+				processMessage(*findClient(fds[i].fd));
+			}
+			if (fds[i].revents & (POLLERR | POLLHUP))
+				close(fds[i].fd);
 		}
 	}
 	deleteAllChannels();
@@ -99,23 +107,6 @@ void Server::serverSocket()
 	fds.push_back(newPoll); //Afegim la estructura al vector de fds que monitoreja poll() 
 }
 
-//Rebem informacio d'un client ja registrat
-void Server::recieveNewData(int fd)
-{
-	
-	std::string message = read_message(fd);
-	std::cout << message << std::endl;
-	std::cout << "Data from client with fd <" << fd << "> recieved" << std::endl;
-	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
-	{
-		if (it->getFd() == fd)
-		{
-			processMessage(it->getNickname(), message);
-			return ;
-		}
-	}
-}
-
 void Server::acceptNewClient()
 {
 	Client				client;
@@ -132,29 +123,27 @@ void Server::acceptNewClient()
 	if (fcntl(cliFd, F_SETFL, O_NONBLOCK) == -1) //Fem que sigui no bloquejant
 	{
 		std::cout << "fcntl() function in acceptClient() failed" << std::endl;
+		close(cliFd);
 		return ;
 	}
 	newPoll.fd = cliFd;
 	newPoll.events = POLLIN;
 	newPoll.revents = 0;
 	fds.push_back(newPoll);
-	if (!newClientRequest(client, cliFd))
+	/*if (!newClientRequest(client, cliFd))
 	{
 		clearClient(cliFd);
 		close(cliFd);
 		return ;
-	}
+	}*/
 	client.setFd(cliFd);
 	client.setIP(inet_ntoa(cliAdd.sin_addr));
 	clients.push_back(client);
 	std::cout << "Client whith fd <" << cliFd << "> connected correctly" << std::endl;
 }
 
-bool Server::newClientRequest(Client &client, int cliFd)
+/*bool Server::newClientRequest(Client &client, int cliFd)
 {
-	std::string incorrectPw = "Sorry, the password is incorrect :(";
-	std::string incorrectNick = "Error! The nickname is in use or empty";
-	std::string incorrectName = "Incorrect or empty name, only characters please";
 	std::string success = "Conected correctly! Enjoy :)\n";
 	bool password = false;
 	bool nick = false;
@@ -177,10 +166,7 @@ bool Server::newClientRequest(Client &client, int cliFd)
 			std::string psswd;
 			iss >> psswd;
 			if (psswd != this->password)
-			{
-				send(cliFd, incorrectPw.c_str(), incorrectPw.size(), 0);
 				return (false);
-			}
 			password = true;
 		}
 		else if (command == "NICK")
@@ -188,57 +174,50 @@ bool Server::newClientRequest(Client &client, int cliFd)
 			std::string nickName, command2, userName;
 			iss >> nickName >> command2 >> userName;
 			if (!isNicknameValid(nickName))
-			{
-				send(cliFd, incorrectNick.c_str(), incorrectNick.size(), 0);
 				return (false);
-			}
 			client.setNickname(nickName);
 			nick = true;
 			if (command2 == "USER")
 			{
 				if (!isNameValid(userName))
-				{
-					send(cliFd, incorrectName.c_str(), incorrectName.size(), 0);
 					return (false);
-				}
 				client.setUsername(userName);
 				uName = true;
 			}
 		}
 	}
-	send(cliFd, success.c_str(), success.size(), 0);
+	send(cliFd, success.c_str(), success.length(), 0);
 	return (true);
-}
+}*/
 
-std::string Server::read_message(int fd)
+void Server::read_message(pollfd &polls)
 {
-	std::string message = "";
-	char buffer[1024];
+	char buffer[4096];
 	ssize_t bytes;
-
-	memset(buffer, 0, sizeof(buffer));
-	while (!strstr(buffer, "\r\n"))
+	int fd = polls.fd;
+	
+	std::cout << "Llega a read_message" << std::endl;
+	Client *c = findClient(polls.fd);
+	if (c == NULL)
 	{
-		memset(buffer, 0, sizeof(buffer));
-		bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
-		if (bytes < 0)
-		{
-			if (errno != EWOULDBLOCK/* && errno != EAGAIN*/)
-			{
-				std::cerr << "Error in recv() function. Client with fd <" << fd << "> disconnected." << std::endl;
-				return "";
-			}
-		}
-		else if (bytes == 0)
-		{
-			std::cout << "Client with fd <" << fd << "> disconnected" << std::endl;
-			return "";
-		}
-		buffer[bytes] = '\0';
-		message.append(buffer);
+		polls.revents = POLLERR;
+		return ;
 	}
-	message.erase(message.size() - 1);
-	return (message);
+	bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+	std::cout << buffer << std::endl;
+	if (bytes <= 0)
+	{
+		polls.revents = POLLERR;
+		std::cout << "Client with fd <" << fd << "> disconnected" << std::endl;
+		return ;
+	}
+	buffer[bytes] = '\0';
+	c->clientBuffer.append(buffer);
+	if (c->clientBuffer.find("\r\n") != std::string::npos)
+	{
+		polls.revents = POLLOUT;
+		c->clientBuffer.erase(c->clientBuffer.size() - 1);
+	}
 }
 
 bool Server::isNameValid(std::string name)
@@ -309,7 +288,7 @@ void Server::clearClient(int fd)
 	//ClearClientFromChannel
 }
 
-Channel *Server::create_channel(const std::string &name, const std::string &key, Client *client)
+Channel *Server::create_channel(const std::string &name, const std::string &key, Client &client)
 {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
@@ -351,9 +330,9 @@ void Server::deleteAllChannels()
     std::cout << "All the channels correctly deleted" << std::endl;
 }
 
-void Server::processMessage(const std::string &sender, const std::string &bigMessage)
+void Server::processMessage(Client &cliente)
 {
-	std::istringstream iss(bigMessage);
+	std::istringstream iss(cliente.clientBuffer);
 	std::string order;
 	std::vector<std::string> args;
 
@@ -370,11 +349,10 @@ void Server::processMessage(const std::string &sender, const std::string &bigMes
 	}*/
 	if (commands.find(order) != commands.end())
 	{
-		Client *c = findClient(sender);
+		Client *c = findClient(cliente.getFd());
 		if (c != NULL)
 			commands[order]->execute(*this, *c, args);
 	}
-	std::cout << "Surt del executee" << std::endl;
 	/*else
 	{
 		
@@ -467,10 +445,19 @@ Client *Server::findClient(std::string nick)
     return NULL;
 }
 
+Client *Server::findClient(int fd)
+{
+	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->getFd() == fd) {
+            return &(*it);
+        }
+    }
+    return NULL;
+}
 
 /* ANTHONY ↓: */
 
-Channel* Server::getChannel(const std::string &channelName)
+/*Channel* Server::getChannel(const std::string &channelName)
 {
 	// Busca el canal por nombre
 	for (size_t i = 0; i < channels.size(); ++i) // o poner ++i
@@ -501,4 +488,4 @@ void Server::removeChannel(const std::string &channelName)
 			break;
 		}
 	}
-}
+}*/

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:06:59 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/10 15:39:44 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/18 12:56:53 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ class Client
 		std::string ip;
 		std::string nickname;
 		std::string username;
+		
 	
 	public:
 		Client();
 		~Client();
+		
+		std::string clientBuffer;
 		
 		void setFd(int fd);
 		void setIP(std::string ip);
