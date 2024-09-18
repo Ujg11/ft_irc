@@ -31,5 +31,14 @@ class Channel
 		bool addClient(Client c);
 		const std::vector<Client> getClients() const;
 		std::string getName();
+
+		/* ANTHONY ↓: */
+
+		bool isClient(const Client &client) const;
+		bool isOperator(const Client &client) const;
+		bool removeClient(const Client &client);
+		bool isEmpty() const;
+
+		/* TERMINO LO DE ANTHONY ⬆ */
 };
 
