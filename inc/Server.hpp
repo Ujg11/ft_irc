@@ -78,9 +78,11 @@ class Server
 
 		/* ANTHONY ↓: */
 
-		/*Channel* getChannel(const std::string &channelName);
+		Channel* getChannel(const std::string &channelName);
 		Client* getClientByName(const std::string &nickname);
-		void removeChannel(const std::string &channelName);*/
+		void removeChannel(const std::string &channelName);
+
+		std::string getServerName() const;
 
 		/* TERMINO LO DE ANTHONY ⬆ */
 		

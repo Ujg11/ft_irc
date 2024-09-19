@@ -483,7 +483,7 @@ Client *Server::findClient(int fd)
 
 /* ANTHONY ↓: */
 
-/*Channel* Server::getChannel(const std::string &channelName)
+Channel* Server::getChannel(const std::string &channelName)
 {
 	// Busca el canal por nombre
 	for (size_t i = 0; i < channels.size(); ++i) // o poner ++i
@@ -514,4 +514,9 @@ void Server::removeChannel(const std::string &channelName)
 			break;
 		}
 	}
-}*/
+}
+
+std::string Server::getServerName() const
+{
+	return serverName; // `serverName` sería un atributo de la clase Server
+}

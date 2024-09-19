@@ -117,7 +117,7 @@ void Join::execute(Server &server, Client &c, std::vector<std::string> args)
     std::string passwordsStr = args.size() > 2 ? argv[2] : "";
 
     std::vector<std::string> channels = strTool.stringSplit(channelsStr, ',');
-    std::vector<std::string> passwords = strTools.stringSpli(passwordsStr, ',');
+    std::vector<std::string> passwords = strTool.stringSplit(passwordsStr, ',');
 
     for (size_t i = 0; i < channels.size(); i++) // o ++i
     {
@@ -131,17 +131,3 @@ void Join::execute(Server &server, Client &c, std::vector<std::string> args)
         }
     }
 }
-
-/* NOTAS:
-
-    . Averiguar que es channelIsJoined, ubicacion linea 28.
-    . Crear funcion IsInvitedOnly e IsInvited, ubicacion linea 43.
-    . Crear funcion IsFull, ubicacion linea 50.
-    . Crear funcion getKey, , ubicacion linea 57.
-    . Denuevo ver lo del broadcast, ubicacion linea 70.
-    . Crear funcion getTopic, ubicacion linea 73.
-    . Crear funcion getServerName, ubicacion linea 75.
-    . Crear la funcion getChannel, ubicacion linea 91. (lo tenemos comentado en el channel o message).
-    . Averiguar que es strTools, ubicacion linea 119.
-    . Crear la funcion stringSplit, ubicacion linea 119.
-*/

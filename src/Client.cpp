@@ -69,3 +69,17 @@ std::string Client::getPrefix() const
 {
 	return (getNickname() + "!" + getUsername() + "@" + getIp());
 }
+
+void Client::sendError(int errorCode, const std::string &nickname, const std::string &command, const std::string &message)
+{
+	std::stringstream ss;
+	ss << ":" << nickname << " " << errorCode << " " << command << " " << message << "\r\n";
+	std::string fullMessage = ss.str();
+
+	send(this->getFd(), fullMessage.c_str(), fullMessage.length(), MSG_DONTWAIT);
+}
+
+bool Client::channelsJoined(const std::string &channelName)
+{
+	return std::find(channelsJoined.begin(), channelsJoined.end(), channelName) != channelsJoined.end();
+}

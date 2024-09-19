@@ -18,6 +18,14 @@
 # define RPL_MYINFO 4
 # define ERR_NICKNAMEINUSE 433
 
+// Codigos especificos para KICK y otros comandos
+
+# define ERR_NOSUCHCHANNEL 403
+# define ERR_NOTONCHANNEL 442
+# define ERR_CHANOPRIVSNEEDED 482
+# define ERR_USERNOTINCHANNEL 441
+# define ERR_NICKNAMEINUSE 433
+
 std::string Message::timeNow() const //funcion que es para el server y guardase el resultado en una variable
 {
     //obtener el tiempo actual
@@ -52,8 +60,19 @@ std::string Message::getMessage(int code, Client &client) const
             return ":" + serverName + " 003 " + nickName + " :This server was created at " + dateTime + "\r\n";
         case RPL_MYINFO:
             return ":" + serverName + " 004 " + nickName + " :" + serverName + " " + serverVersion + " " + "\r\n"; // con tal que envie el mensaje al cliente, ta bien
-        /*case ERR_NICKNAMEINUSE: 433 (caso de oriol, hacer IMPORTANTE)
-            return*/ 
+
+        case ERR_NICKNAMEINUSE: 433
+            return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";
+
+        // Errores especificos del KICK
+        case ERR_NOSUCHCHANNEL:
+            return ":" + serverName + " 403 " + nickName + " " + channelName + " :No such channel\r\n";
+        case ERR_NOTONCHANNEL:
+            return ":" + serverName + " 442 " + nickName + " " + channelName + " :You're not on taht channel\r\n";
+        case ERR_CHANOPRIVSNEEDED:
+            return ":" + serverName + " 482 " + nickName + " " + channelName + " :You are not channel operator\r\n";
+        case ERR_USERNOTINCHANNEL:
+            return ":" + serverName + " 441 " + nickName + " " + channelName + " :They aren't on that channel\r\n";
         default:
             return "NO RESPONSE FOUND";
     }

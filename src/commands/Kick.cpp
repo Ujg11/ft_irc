@@ -77,21 +77,21 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
         Channel *channel = server.getChannel(channelName);
         if (!channel)
         {
-            c.sendError(" 403 ", c.getNickname(), channelName, "No such channel");
+            c.sendError(403, c.getNickname(), "KICK", "No such channel");
             continue;
         }
 
         // Verificar si el cliente que ejecuta el KICK esta en el canal
-        if (!channel->isClient(c.getFd))
+        if (!channel->isClient(c.getFd()))
         {
-            c.sendError(" 442 ", c.getNickname(), channelName, "You're not on that channel");
+            c.sendError(442, c.getNickname(), "KICK", "You're not on that channel");
             continue;
         }
 
         // Verificar si el cliente es un operador del canal
-        if (!channel->isOperator(c.getFd))
+        if (!channel->isOperator(c.getFd()))
         {
-            c.sendError(" 482 ", c.getNickname(), channelName, "You are not channel operator");
+            c.sendError(482, c.getNickname(), "KICK", "You are not channel operator");
             continue;
         }
 
@@ -99,7 +99,7 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
         Client *clientToKick = channel->getClientByName(userToKick);
         if (!clientToKick)
         {
-            c.sendError(" 441 ", c.getNickname(), channelName, "They aren't on that channel");
+            c.sendError(441, c.getNickname(), "KICK", "They aren't on that channel");
             continue;
         }
 
@@ -142,36 +142,30 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 
 /* NOTA:
 
-    Cosas que no tenemos:
+    . Si te da mal el la funcion execute en la linea 78
+        usar este EJEMPLO:
+                    if (!channel)
+        {
+            c.sendError(ERR_NOSUCHCHANNEL, channelName);
+            continue;
+        }
 
-        . Funcion "sendError" -> ubicacion en "Funcion (kICK), linea 62".
-        . Funcion "getChannel" -> ubicacion linea 77. ✅
-        . Funcion "isClient" -> ubicacion linea 85. ✅
-        . Funcion "isOperator" -> ubicacion linea 92. ✅
-        . Funcion "getClientByName" -> ubicacion linea 99. ✅
-        . Funcion "broadcast" -> ubicacion linea 112 (es una funcion nuestra, se llama sendMessage (Leer NOTA 2)).
-        . Funcion "removeClient" -> ubicacion linea 115. ✅
-        . Funcion "isEmpty" -> ubicacion linea 118. ✅
-        . Funcion "removeChannel" -> ubicacion linea 120. ✅
+        if (!channel->isClient(c.getFd()))
+        {
+            c.sendError(ERR_NOTONCHANNEL, channelName);
+            continue;
+        }
 
-        Los que tengan check verde, estan creados, solo hace falta comprobar que funcionan
-            correctamente.
-*/
+        if (!channel->isOperator(c.getFd()))
+        {
+            c.sendError(ERR_CHANOPRIVSNEEDED, channelName);
+            continue;
+        }
 
-/* NOTA 2:
-
-    La funcion broadcast es lo que tenemos en la clase Message:
-
-        Ejemplo de broadcast:
-
-            void Channel::broadcast(const std::string &message)
-            {
-                for (size_t i = 0; i < clients.size(); ++i)
-                {
-                    // Enviar el mensaje a cada cliente en el canal
-                    send(clients[i].getFd(), message.c_str(), message.size(), 0);
-                }
-            }
-
-    El nuestro se encuentra en Message, pensar una manera de en la linea 112, usar nuestro broadcast
+        Client *clientToKick = channel->getClientByName(userToKick);
+        if (!clientToKick)
+        {
+            c.sendError(ERR_USERNOTINCHANNEL, channelName);
+            continue;
+        }
 */

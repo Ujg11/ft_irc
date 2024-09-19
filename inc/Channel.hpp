@@ -22,6 +22,7 @@ class Channel
 		std::string key;
 		std::vector<Client> admins;
 		std::vector<Client> clients;
+		std::vector<std::string> invitedClients;  // Lista de clientes invitados
 		
 	public:
 		Channel(std::string name, std::string key, Client &admin);
@@ -39,6 +40,15 @@ class Channel
 		void removeClient(const Client &client);
 		bool isEmpty() const;
 
+		void broadcast(const std::string &message);
+
+		bool isInviteOnly() const;
+		bool isInvited(const Client &user) const;
+		bool isFull() const;
+		std::string getKey() const;
+		void broadcastMessage(const std::string &message);
+		std::string getTopic() const;
+		std::vector<std::string> stringSplit(std::string str, std::string delimiter);
 		/* TERMINO LO DE ANTHONY ⬆ */
 };
 

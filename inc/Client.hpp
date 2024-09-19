@@ -51,4 +51,8 @@ class Client
 		std::string getUsername() const;
 		std::string getIp() const;
 		std::string getPrefix() const;
+
+		/* Anthony */
+		void sendError(int errorCode, const std::string &nickname, const std::string &command, const std::string &message);
+		bool channelsJoined(const std::string &channelName);
 };
