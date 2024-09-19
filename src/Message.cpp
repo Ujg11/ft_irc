@@ -61,18 +61,18 @@ std::string Message::getMessage(int code, Client &client) const
         case RPL_MYINFO:
             return ":" + serverName + " 004 " + nickName + " :" + serverName + " " + serverVersion + " " + "\r\n"; // con tal que envie el mensaje al cliente, ta bien
 
-        case ERR_NICKNAMEINUSE: 433
+        case ERR_NICKNAMEINUSE:
             return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";
 
-        // Errores especificos del KICK
+        // Errores especificos del KICK // crear channelName
         case ERR_NOSUCHCHANNEL:
-            return ":" + serverName + " 403 " + nickName + " " + channelName + " :No such channel\r\n";
+            return ":" + serverName + " 403 " + nickName + " " + serverName + " :No such channel\r\n";
         case ERR_NOTONCHANNEL:
-            return ":" + serverName + " 442 " + nickName + " " + channelName + " :You're not on taht channel\r\n";
+            return ":" + serverName + " 442 " + nickName + " " + serverName + " :You're not on taht channel\r\n";
         case ERR_CHANOPRIVSNEEDED:
-            return ":" + serverName + " 482 " + nickName + " " + channelName + " :You are not channel operator\r\n";
+            return ":" + serverName + " 482 " + nickName + " " + serverName + " :You are not channel operator\r\n";
         case ERR_USERNOTINCHANNEL:
-            return ":" + serverName + " 441 " + nickName + " " + channelName + " :They aren't on that channel\r\n";
+            return ":" + serverName + " 441 " + nickName + " " + serverName + " :They aren't on that channel\r\n";
         default:
             return "NO RESPONSE FOUND";
     }

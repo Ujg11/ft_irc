@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 
 #include "../inc/Client.hpp"
+# include <sstream>
+# include <vector>
+# include <string>
+# include <algorithm>
 
 Client::Client()
 {
@@ -81,5 +85,5 @@ void Client::sendError(int errorCode, const std::string &nickname, const std::st
 
 bool Client::channelsJoined(const std::string &channelName)
 {
-	return std::find(channelsJoined.begin(), channelsJoined.end(), channelName) != channelsJoined.end();
+    return std::find(joinedChannels.begin(), joinedChannels.end(), channelName) != joinedChannels.end();
 }

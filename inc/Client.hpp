@@ -14,6 +14,8 @@
 
 # include <iostream>
 # include <vector>
+# include <string>
+# include <algorithm>
 # include <sys/socket.h> //socket()
 # include <sys/types.h> //socket()
 # include <netinet/in.h> //sockaddr_in
@@ -30,6 +32,8 @@ class Client
 		std::string ip;
 		std::string nickname;
 		std::string username;
+
+		std::vector<std::string> joinedChannels;  // Almacena los canales a los que el cliente se ha unido
 
 	public:
 		Client();

@@ -22,7 +22,12 @@ class Channel
 		std::string key;
 		std::vector<Client> admins;
 		std::vector<Client> clients;
+
+
 		std::vector<std::string> invitedClients;  // Lista de clientes invitados
+		bool invitedOnly; // Flag para indicar si el canal es solo para invitados
+		size_t maxClients; // Límite máximo de usuarios en el canal
+		std::string topic; // Tema del canal
 		
 	public:
 		Channel(std::string name, std::string key, Client &admin);
@@ -42,7 +47,7 @@ class Channel
 
 		void broadcast(const std::string &message);
 
-		bool isInviteOnly() const;
+		bool isInvitedOnly() const;
 		bool isInvited(const Client &user) const;
 		bool isFull() const;
 		std::string getKey() const;

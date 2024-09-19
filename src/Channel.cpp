@@ -127,17 +127,17 @@ bool Channel::isInvitedOnly() const
 
 bool Channel::isInvited(const Client &user) const
 {
-    return std::find(invitedClients.begin(), invitedClient.end(), user.getNickname()) != invitedCLients.end();
+    return std::find(invitedClients.begin(), invitedClients.end(), user.getNickname()) != invitedClients.end();
 }
 
 bool Channel::isFull() const
 {
-    return clients.size() >= maxClients // `maxClients` es el límite máximo de usuarios en el canal
+    return clients.size() >= maxClients; // `maxClients` es el límite máximo de usuarios en el canal
 }
 
 std::string Channel::getKey() const
 {
-    return channelKey; // `channelKey` sería la contraseña del canal // hay una key en private, podemos utilizar eso?
+    return key; // `channelKey` sería la contraseña del canal, hay una key en private, podemos utilizar eso?
 }
 
 void Channel::broadcastMessage(const std::string &message)
