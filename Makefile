@@ -20,7 +20,8 @@ RED = \033[91m
 END_COLOR = \033[0m
 
 SRC = main.cpp src/Message.cpp src/Client.cpp src/Server.cpp src/Channel.cpp \
-		src/commands/Pass.cpp src/commands/Quit.cpp src/commands/Nick.cpp
+		src/commands/Pass.cpp src/commands/Quit.cpp src/commands/Nick.cpp \
+			src/commands/Join.cpp
 
 INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp \
 		inc/commands/Commad.hpp inc/commands/Join.hpp inc/commands/Kick.hpp \

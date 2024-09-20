@@ -154,26 +154,6 @@ std::string Channel::getTopic() const
     return topic;
 }
 
-std::vector<std::string> Channel::stringSplit(std::string str, std::string delimiter)
-{
-    std::vector<std::string> split;
-    std::string substr;
-    size_t start, end;
-
-    start = 0;
-    while ((end = str.find(delimiter, start)) != std::string::npos)
-    {
-        substr = str.substr(start, end - start);
-        if (!substr.empty())
-            split.push_back(substr);
-        start = end + delimiter.size();
-    }
-    substr = str.substr(start);
-    if (!substr.empty())
-        split.push_back(substr);
-    return split;
-}
-
 /* Si esto no va aqui hay otra modificacion
 
     bool Channel::isInvitedOnly() const {

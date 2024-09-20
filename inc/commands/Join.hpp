@@ -15,6 +15,8 @@
 # include "Command.hpp"
 # include "../Server.hpp"
 
+class Channel;
+
 class Join : public Command
 {
     public:

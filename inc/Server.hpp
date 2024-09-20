@@ -34,7 +34,8 @@
 # include "../inc/commands/Quit.hpp"
 # include "../inc/commands/Pass.hpp"
 //# include "../inc/commands/Kick.hpp"
-//# include "../inc/commands/Join.hpp"
+# include "../inc/commands/Join.hpp"
+# include "../inc/commands/ClasString.hpp"
 # include "../inc/commands/Nick.hpp"
 
 class Channel;

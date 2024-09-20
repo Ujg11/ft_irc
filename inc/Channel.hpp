@@ -52,7 +52,6 @@ class Channel
 		std::string getKey() const;
 		void broadcastMessage(const std::string &message, const Client &c);
 		std::string getTopic() const;
-		std::vector<std::string> stringSplit(std::string str, std::string delimiter);
 		/* TERMINO LO DE ANTHONY ⬆ */
 };
 
