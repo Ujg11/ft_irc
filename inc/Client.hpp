@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:06:59 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 11:33:40 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 14:03:15 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Client
 		bool hasPass;
 		bool hasNick;
 		bool hasName;
-		bool hasLogin;
+		bool handShake;
 		
 		void setFd(int fd);
 		void setIP(std::string ip);

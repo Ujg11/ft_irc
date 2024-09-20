@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 18:38:35 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:11:06 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Server::Server()
 	this->serverName = "LosVSCode bro";
 	commands["QUIT"] = new Quit();
 	commands["PASS"] = new Pass();
+	commands["NICK"] = new Nick();
 	//commands["MODE"]
 	//commands["KICK"]
 	//commands["JOIN"]
@@ -72,6 +73,7 @@ void Server::serverInit(int port, std::string passwd)
 			if (fds[i].revents & POLLOUT)
 			{
 				processMessage(*findClient(fds[i].fd));
+				fds[i].revents = POLLIN;
 			}
 			if (fds[i].revents & (POLLERR | POLLHUP))
 			{
@@ -180,7 +182,6 @@ void Server::processMessage(Client &cliente)
 	
 	for(size_t i = 0; i < commandsVec.size(); i++)
 	{
-		std::cout << "Entra al while" << std::endl;
 		std::istringstream iss(commandsVec[i]);
 		std::string order;
 		std::vector<std::string> args;
@@ -190,16 +191,29 @@ void Server::processMessage(Client &cliente)
 		while (iss >> arg)
 			args.push_back(arg);
 		if (order == "CAP")
-		{
 			continue;
+		else if (order == "USER")
+		{
+			if (!args.empty() && !args.at(0).empty())
+			{
+				cliente.setUsername(args.at(0));
+				cliente.hasName = true;
+			}
 		}
 		else if (commands.find(order) != commands.end())
 		{
-			std::cout << "Troba la comanda " << order << std::endl; 
-			Client *c = findClient(cliente.getFd());
-			if (c != NULL)
-				commands[order]->execute(*this, *c, args);
+			commands[order]->execute(*this, cliente, args);
 		}
+	}
+	cliente.clientBuffer.clear();
+	if (cliente.handShake == false)
+	{
+		if (cliente.hasPass && cliente.hasNick && cliente.hasName)
+		{
+			message.sendHandShake(cliente);
+			cliente.handShake = true;
+			std::cout << "HandShake done in client <" << cliente.getFd() << ">" << std::endl; 
+		}	
 	}
 	/*if (order == "PRIVMSG")
 		{
@@ -351,6 +365,7 @@ void Server::clearClient(int fd)
 			break ;
 		}
 	}
+	close(fd);
 	//ClearClientFromChannel
 }
 

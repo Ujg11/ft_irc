@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 11:53:34 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:11:26 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ class Channel
 		std::string key;
 		std::vector<Client> admins;
 		std::vector<Client> clients;
-
 
 		std::vector<std::string> invitedClients;  // Lista de clientes invitados
 		bool invitedOnly; // Flag para indicar si el canal es solo para invitados

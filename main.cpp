@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 15:00:51 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/17 12:35:26 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 13:01:59 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        std::cerr << "There are not enough arguments" << std::endl;
+        std::cerr << "There are not enough arguments, <password> <port>" << std::endl;
         return 1;
     }
     std::string port = argv[1];

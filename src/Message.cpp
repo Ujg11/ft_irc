@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/20 10:57:02 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 14:26:10 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ std::string Message::getMessage(int code, Client &client) const
         case RPL_WELCOME:
             return ":" + serverName + " 001 " + nickName + " :Welcome to the Internet Relay Network " + client.getPrefix() + "\r\n";
         case RPL_YOURHOST:
-            return ":" + serverName + " 002 " + nickName + " :Your host is <servername>, running version " + serverVersion + "\r\n";
+            return ":" + serverName + " 002 " + nickName + " :Your host is " + serverName + ", running version " + serverVersion + "\r\n";
         case RPL_CREATED:
             return ":" + serverName + " 003 " + nickName + " :This server was created at " + dateTime + "\r\n";
         case RPL_MYINFO:
@@ -87,4 +87,12 @@ void Message::sendMessage(const Client &client, std::string message)
     if (message.empty())
         return ;
     send(client.getFd(), message.c_str(), message.length(), MSG_DONTWAIT); //si falla, hacer un if con -1;
+}
+
+void Message::sendHandShake(Client &c)
+{
+    sendMessage(c, getMessage(1, c));
+    sendMessage(c, getMessage(2, c));
+    sendMessage(c, getMessage(3, c));
+    sendMessage(c, getMessage(4, c));
 }

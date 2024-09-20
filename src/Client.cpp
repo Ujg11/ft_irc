@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:20:50 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 11:34:26 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 14:24:02 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ Client::Client()
 {
 	this->hasPass = false;
 	this->hasNick = false;
-	this->hasNick = false;
-	this->hasLogin = false;
+	this->hasName = false;
+	this->handShake = false;
 }
 
 Client::~Client()

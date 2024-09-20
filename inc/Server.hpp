@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 10:48:41 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:56:37 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@
 # include <cstring>
 # include <sstream>
 
+# include "../inc/Message.hpp"
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
-# include "../inc/Message.hpp"
 # include "../inc/commands/Command.hpp"
 # include "../inc/commands/Quit.hpp"
 # include "../inc/commands/Pass.hpp"
 //# include "../inc/commands/Kick.hpp"
 //# include "../inc/commands/Join.hpp"
-//# include "../inc/commands/Nick.hpp"
+# include "../inc/commands/Nick.hpp"
 
 class Channel;
 class Command;
@@ -48,7 +48,6 @@ class Server
 		static bool	signal;
 		std::string serverName;
 		std::string	password;
-		
 		
 		std::vector<Client> clients;
 		std::vector<struct pollfd> fds; //Vector de pollfd

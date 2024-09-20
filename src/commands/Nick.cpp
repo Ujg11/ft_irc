@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:20:14 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 11:57:37 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:09:39 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,8 @@
 
 static int updateNick(Server &s, Client &c, std::vector<std::string> args)
 {
-	if (args.empty() || args.at(0).empty()) {
-		s.message.sendMessage(c, s.message.getMessage(431, c));
-        return (-1);
-    }
 	std::string newNick = args.at(0);
-	if (s.findClient(c.getNickname()) != NULL)
+	if (s.findClient(newNick) != NULL)
 	{
 		s.message.sendMessage(c, s.message.getMessage(433, c));
 		return (-1);
@@ -41,5 +37,16 @@ static int updateNick(Server &s, Client &c, std::vector<std::string> args)
 
 void Nick::execute(Server &server, Client &c, std::vector<std::string> args)
 {
-	
+	if (args.empty() || args.at(0).empty())
+	{
+		server.message.sendMessage(c, server.message.getMessage(431, c));
+        return ;
+    }
+	if (!c.getNickname().empty() && server.findClient(c.getNickname()) != NULL)
+		updateNick(server, c, args);
+	else if (c.getNickname().empty())
+	{
+		c.setNickname(args.at(0));
+		c.hasNick = true;
+	}
 }

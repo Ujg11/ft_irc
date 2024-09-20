@@ -6,13 +6,13 @@
 #    By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 16:07:39 by agrimald          #+#    #+#              #
-#    Updated: 2024/09/18 18:19:14 by ojimenez         ###   ########.fr        #
+#    Updated: 2024/09/20 14:53:16 by ojimenez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
 CPP = c++
-CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -I./inc -I./inc/commands -I./src -I./src/commands
+CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -I./inc -I./inc/commands -I./src -I./src/commands
 RM = rm -rf
 CYAN = \033[96m
 MAGENTA = \033[35m
@@ -20,11 +20,11 @@ RED = \033[91m
 END_COLOR = \033[0m
 
 SRC = main.cpp src/Message.cpp src/Client.cpp src/Server.cpp src/Channel.cpp \
-		src/commands/Pass.cpp src/commands/Quit.cpp #src/commands/Nick.cpp
+		src/commands/Pass.cpp src/commands/Quit.cpp src/commands/Nick.cpp
 
 INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp \
 		inc/commands/Commad.hpp inc/commands/Join.hpp inc/commands/Kick.hpp \
-		inc/commands/Quit.hpp inc/commands/Pass.hpp #inc/commands/Nick.hpp 
+		inc/commands/Quit.hpp inc/commands/Pass.hpp inc/commands/Nick.hpp 
 		
 
 OBJECTS = $(SRC:.cpp=.o)

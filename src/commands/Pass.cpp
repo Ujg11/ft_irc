@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 16:08:55 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 17:23:37 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:11:59 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void Pass::execute(Server &server, Client &c, std::vector<std::string> args)
 {
 	std::string response;
-	std::cout << "LLEGA A PASS" << std::endl;
 	
 	if (!args.empty() && args.at(0) == server.getPassword())
 	{
