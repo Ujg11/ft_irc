@@ -23,7 +23,7 @@ Server::Server()
 	commands["NICK"] = new Nick();
 	//commands["MODE"]
 	//commands["KICK"]
-	//commands["JOIN"]
+	commands["JOIN"] = new Join();
 	//commands["PART"]
 }
 
