@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:20:14 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 18:50:18 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:57:37 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,27 @@
 
 static int updateNick(Server &s, Client &c, std::vector<std::string> args)
 {
-	if (args.empty()) {
-        std::string reason = "Error: No nickname provided.\r\n";
-        send(c.getFd(), reason.c_str(), reason.length(), 0);
-        return -1;
+	if (args.empty() || args.at(0).empty()) {
+		s.message.sendMessage(c, s.message.getMessage(431, c));
+        return (-1);
     }
 	std::string newNick = args.at(0);
-	if (!newNick.empty() && s.findClient(c.getNickname()))
+	if (s.findClient(c.getNickname()) != NULL)
 	{
-		if (s.findClient(args.at(0)) == NULL)
+		s.message.sendMessage(c, s.message.getMessage(433, c));
+		return (-1);
+	}
+	std::vector<std::string> channels = c.getJoinedChannels();
+	std::string oldNick = c.getNickname();
+	c.setNickname(newNick);
+	std::string message = ":" + oldNick + "!" + c.getUsername() + "@" + c.getIp() + "NICK " + newNick + "\r\n";
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		Channel *channel = s.getChannel(channels[i]);
+		if (channel != NULL)
 		{
-			std::cout << "UpdateNick, nou nick: " << args.at(0) << std::endl;
-			c.setNickname(args.at(0));
+			channel->broadcastMessage(message, c);
 		}
-		else
-		{
-			std::string reason = c.getNickname() + " :Nickname is already in use" + "\r\n";
-			send(c.getFd(), reason.c_str(), reason.length(), 0);
-			//:server_name 433 <nickname> <new_nick> :Nickname is already in use
-			
-		}
-			
 	}
 	return (0);
 }

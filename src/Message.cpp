@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/18 16:54:58 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 10:57:02 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define RPL_CREATED 3
 # define RPL_MYINFO 4
 # define ERR_NICKNAMEINUSE 433
+# define ERR_NONICKNAMEGIVEN 431
 
 // Codigos especificos para KICK y otros comandos
 
@@ -63,6 +64,8 @@ std::string Message::getMessage(int code, Client &client) const
 
         case ERR_NICKNAMEINUSE:
             return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";
+        case ERR_NONICKNAMEGIVEN:
+            return ":" + serverName + " 431 " + nickName + " :Returned when a nickname parameter expected for a command isn't found\r\n";
 
         // Errores especificos del KICK // crear channelName
         case ERR_NOSUCHCHANNEL:

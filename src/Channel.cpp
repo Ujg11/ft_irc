@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 11:17:30 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:53:42 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,11 +140,12 @@ std::string Channel::getKey() const
     return key; // `channelKey` sería la contraseña del canal, hay una key en private, podemos utilizar eso?
 }
 
-void Channel::broadcastMessage(const std::string &message)
+void Channel::broadcastMessage(const std::string &message, const Client &c)
 {
     for (size_t i = 0; i < clients.size(); i++) // o ++i
     {
-        send(clients[i].getFd(), message.c_str(), message.length(), 0);
+        if (clients[i].getNickname() != c.getNickname())
+            send(clients[i].getFd(), message.c_str(), message.length(), 0);
     }
 }
 

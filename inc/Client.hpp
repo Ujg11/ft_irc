@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:06:59 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 16:53:41 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:33:40 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ class Client
 		std::string getUsername() const;
 		std::string getIp() const;
 		std::string getPrefix() const;
+		std::vector<std::string> getJoinedChannels() const;
+		void addJoinedChannel(const std::string &channelName);
+		void removeJoinedChannel(const std::string &channelName);
 
 		/* Anthony */
 		void sendError(int errorCode, const std::string &nickname, const std::string &command, const std::string &message);

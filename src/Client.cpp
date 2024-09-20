@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:20:50 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 16:54:31 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:34:26 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,24 @@ std::string Client::getPrefix() const
 	return (getNickname() + "!" + getUsername() + "@" + getIp());
 }
 
+std::vector<std::string> Client::getJoinedChannels() const
+{
+	return (this->joinedChannels);
+}
+
+void Client::addJoinedChannel(const std::string &channelName)
+{
+	if (std::find(joinedChannels.begin(), joinedChannels.end(), channelName) == joinedChannels.end())
+		joinedChannels.push_back(channelName);
+}
+	
+void Client::removeJoinedChannel(const std::string &channelName)
+{
+	std::vector<std::string>::iterator it = std::find(joinedChannels.begin(), joinedChannels.end(), channelName);
+	if (it != joinedChannels.end())
+		joinedChannels.erase(it);
+}
+
 void Client::sendError(int errorCode, const std::string &nickname, const std::string &command, const std::string &message)
 {
 	std::stringstream ss;
@@ -85,5 +103,5 @@ void Client::sendError(int errorCode, const std::string &nickname, const std::st
 
 bool Client::channelsJoined(const std::string &channelName)
 {
-    return std::find(joinedChannels.begin(), joinedChannels.end(), channelName) != joinedChannels.end();
+	return std::find(joinedChannels.begin(), joinedChannels.end(), channelName) != joinedChannels.end();
 }

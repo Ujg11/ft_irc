@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/18 11:17:36 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:53:34 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ class Channel
 		bool isInvited(const Client &user) const;
 		bool isFull() const;
 		std::string getKey() const;
-		void broadcastMessage(const std::string &message);
+		void broadcastMessage(const std::string &message, const Client &c);
 		std::string getTopic() const;
 		std::vector<std::string> stringSplit(std::string str, std::string delimiter);
 		/* TERMINO LO DE ANTHONY ⬆ */
