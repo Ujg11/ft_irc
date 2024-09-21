@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/20 14:26:10 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/21 15:45:23 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,20 @@
 # define RPL_MYINFO 4
 # define ERR_NICKNAMEINUSE 433
 # define ERR_NONICKNAMEGIVEN 431
+# define ERR_ERRONEUSNICKNAME 432
 
 // Codigos especificos para KICK y otros comandos
+
+# define ERR_NOSUCHNICK 401
+# define ERR_CANNOTSENDTOCHAN 404
+# define ERR_NORECIPIENT 411
+# define ERR_NOTEXTTOSEND 412
 
 # define ERR_NOSUCHCHANNEL 403
 # define ERR_NOTONCHANNEL 442
 # define ERR_CHANOPRIVSNEEDED 482
 # define ERR_USERNOTINCHANNEL 441
-# define ERR_NICKNAMEINUSE 433
+
 
 std::string Message::timeNow() const //funcion que es para el server y guardase el resultado en una variable
 {
@@ -62,10 +68,23 @@ std::string Message::getMessage(int code, Client &client) const
         case RPL_MYINFO:
             return ":" + serverName + " 004 " + nickName + " :" + serverName + " " + serverVersion + " " + "\r\n"; // con tal que envie el mensaje al cliente, ta bien
 
+        // Errores para NICK
         case ERR_NICKNAMEINUSE:
             return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";
         case ERR_NONICKNAMEGIVEN:
             return ":" + serverName + " 431 " + nickName + " :Returned when a nickname parameter expected for a command isn't found\r\n";
+        case ERR_ERRONEUSNICKNAME:
+            return ":" + serverName + " 431 " + nickName + " :Erroneus nickname\r\n";
+
+        // Errores para PRIVMSG
+        case ERR_NOSUCHNICK:
+            return ":" + serverName + " 401 " + nickName + " :No such nick/channel\r\n";
+        case ERR_CANNOTSENDTOCHAN:
+            return ":" + serverName + " 404 " + nickName + " :Cannot send to channel\r\n";
+        case ERR_NORECIPIENT:
+            return ":" + serverName + " 411 " + nickName + " :No recipient given (PRIVMSG)\r\n";
+        case ERR_NOTEXTTOSEND:
+            return ":" + serverName + " 412 " + nickName + " :No text to send\r\n";
 
         // Errores especificos del KICK // crear channelName
         case ERR_NOSUCHCHANNEL:

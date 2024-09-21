@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 15:11:06 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/21 16:20:33 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,52 +414,37 @@ void Server::deleteAllChannels()
 
 //Buscamos el destinatario del mensaje y lo enviamos
 //Si no lo encontramos mandamos el mensaje de error al emisor
-void Server::handlePrivMessag(const std::string &sender, const std::string &reciever, const std::string &message)
+void Server::handlePrivMessag(Client &sender, const std::string &reciever, const std::string &message)
 {
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
 	{
 		if (it->getNickname() == reciever)
 		{
-			std::string fullMessage = sender + ": " + message + "\n";
-			send(it->getFd(), fullMessage.c_str(), fullMessage.size(), 0);
+			std::string fullMessage = "<" + sender.getNickname() + "> " + message;
+			send(it->getFd(), fullMessage.c_str(), fullMessage.length(), 0);
 			return ;
 		}
 	}
-	std::string err = "No such user with nickname < " + reciever + " >\n";
-	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
-	{
-		if (it->getNickname() == sender)
-		{
-			send(it->getFd(), err.c_str(), err.size(), 0);
-			return ;
-		}
-	}
+	this->message.sendMessage(sender, this->message.getMessage(401, sender));
 }
 
-void Server::handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message)
+void Server::handleChannelMessage(Client &sender, const std::string &channel, const std::string &message)
 {
 	if (!isExistentChannel(channel))
 	{
-		std::string err = "The channel < " + channel + " > don't exist";
-		for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
-		{
-			if (it->getNickname() == sender)
-			{
-				send(it->getFd(), err.c_str(), err.size(), 0);
-				return ;
-			}
-		}
+		this->message.sendMessage(sender, this->message.getMessage(403, sender));
+		return ;
 	}
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
 		if ((*it)->getName() == channel)
 		{
 			std::vector<Client> channelClients = (*it)->getClients();
-			std::string fullMessage = sender + ": " + message + "\n";
+			std::string fullMessage = "<" + sender.getNickname() + "> " + message;
 			for (std::vector<Client>::iterator i = channelClients.begin(); i != channelClients.end(); ++i)
 			{
-				if (i->getNickname() != sender)
-					send(i->getFd(), fullMessage.c_str(), fullMessage.size(), 0);
+				if (i->getNickname() != sender.getNickname())
+					send(i->getFd(), fullMessage.c_str(), fullMessage.length(), 0);
 			}
 			return ;
 		}

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 12:56:37 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/21 16:16:51 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ class Server
 		bool isNameValid(std::string name);
 		void read_message(pollfd &polls);
 		void processMessage(Client &cliente);
-		void handlePrivMessag(const std::string &sender, const std::string &reciever, const std::string &message);
-		void handleChannelMessage(const std::string &sender, const std::string &channel, const std::string &message);
+		void handlePrivMessag(Client &sender, const std::string &reciever, const std::string &message);
+		void handleChannelMessage(Client &sender, const std::string &channel, const std::string &message);
 		bool isExistentChannel(const std::string &name);
 		//Channel findChannel(const std::string &name);
 		Client *findClient(std::string nick);
