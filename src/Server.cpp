@@ -24,7 +24,7 @@ Server::Server()
 	commands["PASS"] = new Pass();
 	commands["NICK"] = new Nick();
 	//commands["MODE"]
-	//commands["KICK"]
+	commands["KICK"] = new Kick();
 	commands["JOIN"] = new Join();
 	//commands["PART"]
 }
