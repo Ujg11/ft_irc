@@ -154,6 +154,16 @@ std::string Channel::getTopic() const
     return topic;
 }
 
+Client* Channel::getClientByName(const std::string &nickname)
+{
+	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+	{
+		if (clients[i].getNickname() == nickname)
+			return &clients[i];
+	}
+	return NULL;
+}
+
 /* Si esto no va aqui hay otra modificacion
 
     bool Channel::isInvitedOnly() const {

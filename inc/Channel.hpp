@@ -52,6 +52,8 @@ class Channel
 		std::string getKey() const;
 		void broadcastMessage(const std::string &message, const Client &c);
 		std::string getTopic() const;
+
+		Client* getClientByName(const std::string &nickname);
 		/* TERMINO LO DE ANTHONY ⬆ */
 };
 

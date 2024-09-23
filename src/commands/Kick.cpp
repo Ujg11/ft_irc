@@ -12,14 +12,16 @@
 
 # include "../../inc/commands/Kick.hpp"
 
+# define ERR_NEEDMOREPARAMS 461
+
 /* FindReason: encuentra el motivo del Kick a partir de los argumentos. */
 std::string Kick::FindReason(std::vector<std::string> &args)
 {
     if (args.size() > 2)
     {
-        std::string reason = argv[2];
-        if (reason[0] == ":") // Elimina el ';' del motivo
-            return substr(1);
+        std::string reason = args[2];
+        if (reason[0] == ':') // Elimina el ':' del motivo
+            return reason.substr(1); // Elimina el primer caracter
         return reason;
     }
     return ""; // no hay motivo proporcionado
@@ -59,13 +61,13 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
     // Verificar si se proporcionaron suficientes parametros
     if (args.size() < 2)
     {
-        c.sendError(" 461 ", c.getNickname(), "KICK", "Not enough parameters");
+        c.sendError(461, c.getNickname(), "KICK", "Not enough parameters");
         return ;
     }
 
     // Obtener el canal o canales del usuario para expulsar
-    std::vector<std::string> channels = SplitChannels(argv[0]);
-    std::string userToKick = argv[1];
+    std::vector<std::string> channels = SplitChannels(args[0]);
+    std::string userToKick = args[1];
     std::string reason = FindReason(args); // Motivo opcional
 
     // Iterar sobre el canal
@@ -82,14 +84,14 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
         }
 
         // Verificar si el cliente que ejecuta el KICK esta en el canal
-        if (!channel->isClient(c.getFd()))
+        if (!channel->isClient(c))
         {
             c.sendError(442, c.getNickname(), "KICK", "You're not on that channel");
             continue;
         }
 
         // Verificar si el cliente es un operador del canal
-        if (!channel->isOperator(c.getFd()))
+        if (!channel->isOperator(c))
         {
             c.sendError(482, c.getNickname(), "KICK", "You are not channel operator");
             continue;
