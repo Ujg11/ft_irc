@@ -496,16 +496,6 @@ Channel* Server::getChannel(const std::string &channelName)
 	return NULL; // Retorna nullptr si no se encuentra el canal
 }
 
-Client* Server::getClientByName(const std::string &nickname)
-{
-	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
-	{
-		if (clients[i].getNickname() == nickname)
-			return &clients[i];
-	}
-	return NULL;
-}
-
 void Server::removeChannel(const std::string &channelName)
 {
 	for (size_t i = 0; i < channels.size(); i++)// o poner ++i
