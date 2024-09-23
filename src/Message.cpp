@@ -53,7 +53,7 @@ std::string Message::getMessage(int code, Client &client) const
 {
     std::string nickName = client.getNickname();
     std::string userName = client.getUsername();
-    std::string serverName = "Perrosl";
+    std::string serverName = "LosVSCode bro";
     std::string serverVersion = "42";
     std::string dateTime = timeNow();
 
