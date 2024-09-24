@@ -6,13 +6,13 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:05:40 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:46:49 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:54:49 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/commands/Topic.hpp"
 
-void Nick::execute(Server &server, Client &c, std::vector<std::string> args)
+void Topic::execute(Server &server, Client &c, std::vector<std::string> args)
 {
 	if (args.size() < 1)
 	{
