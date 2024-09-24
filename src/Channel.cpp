@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 14:02:36 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:44:19 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ Channel::Channel(std::string name, std::string key, Client &admin)
 {
     this->name = name;
     this->key = key;
+    this->topic = "";
     addAdmin(admin);
 }
 
@@ -110,6 +111,7 @@ bool Channel::isEmpty() const
 
 /* TERMINO LO DE ANTHONY ⬆ */
 
+//Envia el mensaje a todos los clientes incluido el emisor
 void Channel::broadcast(const std::string &message)
 {
     for (size_t i = 0; i < clients.size(); i++) // o ++i
@@ -140,6 +142,7 @@ std::string Channel::getKey() const
     return key; // `channelKey` sería la contraseña del canal, hay una key en private, podemos utilizar eso?
 }
 
+//Envia el mensaje a todos los clientes menos al emisor
 void Channel::broadcastMessage(const std::string &message, const Client &c)
 {
     for (size_t i = 0; i < clients.size(); i++) // o ++i
@@ -152,6 +155,11 @@ void Channel::broadcastMessage(const std::string &message, const Client &c)
 std::string Channel::getTopic() const
 {
     return topic;
+}
+
+void Channel::setTopic(std::string topic)
+{
+    this->topic = topic;
 }
 
 Client* Channel::getClientByName(const std::string &nickname)

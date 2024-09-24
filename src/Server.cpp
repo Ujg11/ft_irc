@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 13:58:11 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:06:55 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ Server::Server()
 	//commands["MODE"]
 	commands["KICK"] = new Kick();
 	commands["JOIN"] = new Join();
-	commands["PRIVMSG"] = new Privmsg(); 
+	commands["PRIVMSG"] = new Privmsg();
+	
 	//commands["PART"]
 }
 

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 12:11:26 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:12:30 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ class Channel
 		const std::vector<Client> getClients() const;
 		std::string getName();
 		void addAdmin(const Client &c);
+		void setTopic(std::string topic);
+		
 		/* ANTHONY ↓: */
 
 		bool isClient(const Client &client) const;

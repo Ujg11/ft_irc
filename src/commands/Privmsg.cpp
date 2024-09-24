@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 11:40:29 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 13:10:02 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:36:23 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void Privmsg::execute(Server &server, Client &c, std::vector<std::string> args)
     message += "\r\n";
     if (message[0] == ':')
         message.erase(0, 1);
-    std::cout << "Llega a hacer las funciones de handle" << std::endl;
     if (recieverNick[0] == '#')
         server.handleChannelMessage(c, recieverNick, message);
     else
