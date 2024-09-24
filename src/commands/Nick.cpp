@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:20:14 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/21 15:58:40 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:13:57 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 static bool isNickValid(const std::string n)
 {
-	if (n.find('#') == std::string::npos)
-		return (false);
-	if (isdigit(n[0]))
+	if (n.empty() || isdigit(n[0]))
 		return (false);
 	for (size_t i = 0; i < n.length(); i++)
 	{
@@ -30,6 +28,11 @@ static bool isNickValid(const std::string n)
 static void updateNick(Server &s, Client &c, std::vector<std::string> args)
 {
 	std::string newNick = args.at(0);
+	if (!isNickValid(newNick))
+	{
+		s.message.sendMessage(c, s.message.getMessage(432, c));
+		return ;
+	}
 	if (s.findClient(newNick) != NULL)
 	{
 		s.message.sendMessage(c, s.message.getMessage(433, c));
@@ -37,13 +40,7 @@ static void updateNick(Server &s, Client &c, std::vector<std::string> args)
 	}
 	std::vector<std::string> channels = c.getJoinedChannels();
 	std::string oldNick = c.getNickname();
-	if (isNickValid(newNick))
-		c.setNickname(newNick);
-	else
-	{
-		s.message.sendMessage(c, s.message.getMessage(432, c));
-		return ;
-	}	
+	c.setNickname(newNick);	
 	std::string message = ":" + oldNick + "!" + c.getUsername() + "@" + c.getIp() + "NICK " + newNick + "\r\n";
 	for (size_t i = 0; i < channels.size(); i++)
 	{
@@ -53,7 +50,6 @@ static void updateNick(Server &s, Client &c, std::vector<std::string> args)
 			channel->broadcastMessage(message, c);
 		}
 	}
-	return ;
 }
 
 void Nick::execute(Server &server, Client &c, std::vector<std::string> args)
@@ -63,11 +59,22 @@ void Nick::execute(Server &server, Client &c, std::vector<std::string> args)
 		server.message.sendMessage(c, server.message.getMessage(431, c));
         return ;
     }
-	if (!c.getNickname().empty() && server.findClient(c.getNickname()) != NULL)
+	std::string newNick = args.at(0);
+	if (!c.getNickname().empty())
 		updateNick(server, c, args);
-	else if (c.getNickname().empty())
+	else
 	{
-		c.setNickname(args.at(0));
-		c.hasNick = true;
+		if (server.findClient(newNick) != NULL)
+		{
+			server.message.sendMessage(c, server.message.getMessage(433, c));
+			return ;
+		}
+		if (isNickValid(newNick))
+		{
+			c.setNickname(args.at(0));
+			c.hasNick = true;
+		}
+		else
+			server.message.sendMessage(c, server.message.getMessage(432, c));
 	}
 }

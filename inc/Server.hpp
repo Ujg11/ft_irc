@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/21 16:16:51 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:44:21 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 # include "../inc/commands/Join.hpp"
 # include "../inc/commands/ClasString.hpp"
 # include "../inc/commands/Nick.hpp"
+# include "../inc/commands/Privmsg.hpp"
 
 class Channel;
 class Command;

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/21 16:20:33 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 13:58:11 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ Server::Server()
 	//commands["MODE"]
 	commands["KICK"] = new Kick();
 	commands["JOIN"] = new Join();
+	commands["PRIVMSG"] = new Privmsg(); 
 	//commands["PART"]
 }
 
@@ -149,12 +150,6 @@ void Server::acceptNewClient()
 	newPoll.events = POLLIN;
 	newPoll.revents = 0;
 	fds.push_back(newPoll);
-	/*if (!newClientRequest(client, cliFd))
-	{
-		clearClient(cliFd);
-		close(cliFd);
-		return ;
-	}*/
 	client.setFd(cliFd);
 	client.setIP(inet_ntoa(cliAdd.sin_addr));
 	clients.push_back(client);
@@ -193,7 +188,16 @@ void Server::processMessage(Client &cliente)
 		while (iss >> arg)
 			args.push_back(arg);
 		if (order == "CAP")
+		{
 			continue;
+		}
+		else if (order != "PASS" && !cliente.hasPass)
+		{
+			std::string message = "Please, first introduce the password\r\n";
+			send(cliente.getFd(), message.c_str(), message.length(), 0);
+			cliente.clientBuffer.clear();
+			return ;
+		}
 		else if (order == "USER")
 		{
 			if (!args.empty() && !args.at(0).empty())
@@ -204,7 +208,17 @@ void Server::processMessage(Client &cliente)
 		}
 		else if (commands.find(order) != commands.end())
 		{
-			commands[order]->execute(*this, cliente, args);
+			if (order == "PASS" && !cliente.hasPass)
+				commands[order]->execute(*this, cliente, args);
+			else if (order != "NICK" && !cliente.handShake)
+			{
+				std::string message = "Please, NICK and USER needed\r\n";
+				send(cliente.getFd(), message.c_str(), message.length(), 0);
+				cliente.clientBuffer.clear();
+				return ;
+			}
+			else
+				commands[order]->execute(*this, cliente, args);
 		}
 	}
 	cliente.clientBuffer.clear();
@@ -217,65 +231,11 @@ void Server::processMessage(Client &cliente)
 			std::cout << "HandShake done in client <" << cliente.getFd() << ">" << std::endl; 
 		}	
 	}
-	/*if (order == "PRIVMSG")
-		{
-			if (target[0] == '#')
-				handleChannelMessage(sender, target, message);
-			else
-				handlePrivMessag(sender, target, message);
-		}*/
 }
-
-/*bool Server::newClientRequest(Client &client, int cliFd)
-{
-	std::string success = "Conected correctly! Enjoy :)\n";
-	bool password = false;
-	bool nick = false;
-	bool uName = false;
-	std::string message;
-	
-	while (!password || !nick || !uName)
-	{
-		message = read_message(cliFd);
-		if (message.empty())
-			return (false);
-		//Parsejem el missatge
-		std::istringstream iss(message);
-		std::string command;
-		iss >> command;
-		if (command == "CAP")
-			continue ;
-		else if (command == "PASS")
-		{
-			std::string psswd;
-			iss >> psswd;
-			if (psswd != this->password)
-				return (false);
-			password = true;
-		}
-		else if (command == "NICK")
-		{
-			std::string nickName, command2, userName;
-			iss >> nickName >> command2 >> userName;
-			if (!isNicknameValid(nickName))
-				return (false);
-			client.setNickname(nickName);
-			nick = true;
-			if (command2 == "USER")
-			{
-				if (!isNameValid(userName))
-					return (false);
-				client.setUsername(userName);
-				uName = true;
-			}
-		}
-	}
-	send(cliFd, success.c_str(), success.length(), 0);
-	return (true);
-}*/
 
 void Server::read_message(pollfd &polls)
 {
+	
 	char buffer[4096];
 	ssize_t bytes;
 	int fd = polls.fd;

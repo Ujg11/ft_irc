@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrimald <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:47:08 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/19 19:47:09 by agrimald         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:50:34 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../inc/commands/Command.hpp"
 
-void Command::execute(Server &server, Client &c, std::vector<std::string> args)
+/*void Command::execute(Server &server, Client &c, std::vector<std::string> args)
 {
     if (args.empty())
         return ;
@@ -23,7 +23,7 @@ void Command::execute(Server &server, Client &c, std::vector<std::string> args)
     {
         handleJoin(server, c, args);
     }
-}
+}*/
 
 /* NOTA:
 

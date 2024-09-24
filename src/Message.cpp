@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/21 15:45:23 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:04:39 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ std::string Message::getMessage(int code, Client &client) const
         case ERR_NICKNAMEINUSE:
             return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";
         case ERR_NONICKNAMEGIVEN:
-            return ":" + serverName + " 431 " + nickName + " :Returned when a nickname parameter expected for a command isn't found\r\n";
+            return ":" + serverName + " 431 " + nickName + " :Nickname isn't found\r\n";
         case ERR_ERRONEUSNICKNAME:
-            return ":" + serverName + " 431 " + nickName + " :Erroneus nickname\r\n";
+            return ":" + serverName + " 432 " + nickName + " :Erroneus nickname\r\n";
 
         // Errores para PRIVMSG
         case ERR_NOSUCHNICK:

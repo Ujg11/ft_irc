@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 11:53:42 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 14:02:36 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Channel::Channel(std::string name, std::string key, Client &admin)
 {
-    this->name = "#" + name;
+    this->name = name;
     this->key = key;
     addAdmin(admin);
 }

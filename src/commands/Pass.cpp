@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 16:08:55 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 15:11:59 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 11:27:39 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,10 @@ void Pass::execute(Server &server, Client &c, std::vector<std::string> args)
 		response = "Password accepted.\r\n";
 		send(c.getFd(), response.c_str(), response.length(), 0);
 		c.hasPass = true;
+	}
+	else
+	{
+		response = "Incorrect Password.\r\n";
+		send(c.getFd(), response.c_str(), response.length(), 0);
 	}
 }
