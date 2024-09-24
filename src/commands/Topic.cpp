@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:05:40 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:54:49 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/24 16:02:22 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,6 @@ void Topic::execute(Server &server, Client &c, std::vector<std::string> args)
 	newTopic += "\r\n";
 	channel->setTopic(newTopic);
 	//Notificamos a todos los integrantes del canal sobre el nuevo tema
-	std::string notification = ":" + server.getServerName() + " TOPIC " + channelName + " :" + newTopic + "\r\n";
+	std::string notification = ":" + server.getServerName() + " TOPIC " + channelName + " :" + newTopic;
 	channel->broadcast(notification);
 }
