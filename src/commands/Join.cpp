@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrimald <agrimald@student.42barcelon      +#+  +:+       +#+        */
+/*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 17:46:18 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/20 17:46:20 by agrimald         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:46:38 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void Join::createNewChannel(Client &user, Server &server, const std::string &cha
     // Agregar al usuario y hacerlo operador(admin)
     newChannel->addAdmin(user);
     newChannel->addClient(user);
+    
     user.addJoinedChannel(channelName);
 
     // Notificar a los usuarios del canal
@@ -63,6 +64,10 @@ void Join::handleExistingChannel(Client &user, Server &server, Channel *channel,
 
     // Agregar usuario al canal
     channel->addClient(user);
+
+    //Añadido por Uri
+    channel->removeInvitedClient(user.getNickname());
+    
     user.addJoinedChannel(channelName);
 
     // Notificar a los usuarios del canal

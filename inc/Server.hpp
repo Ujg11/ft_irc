@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:07:16 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/25 14:09:40 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # include "../inc/commands/Nick.hpp"
 # include "../inc/commands/Privmsg.hpp"
 # include "../inc/commands/Topic.hpp"
+# include "../inc/commands/Invite.hpp"
 
 class Channel;
 class Command;
@@ -67,8 +68,8 @@ class Server
 		void serverInit(int port, std::string passwd);
 		void serverSocket();
 		void acceptNewClient();
-		void recieveNewData(pollfd &polls);
-		bool newClientRequest(Client &client, int cliFd);
+		//void recieveNewData(pollfd &polls);
+		//bool newClientRequest(Client &client, int cliFd);
 		static void signalHandler(int signum);
 		void closeFds();
 		void clearClient(int fd);

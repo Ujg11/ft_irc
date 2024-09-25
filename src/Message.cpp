@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/24 12:04:39 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/25 11:54:33 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@
 # define ERR_CANNOTSENDTOCHAN 404
 # define ERR_NORECIPIENT 411
 # define ERR_NOTEXTTOSEND 412
+
+# define ERR_NEEDMOREPARAMS 461
+# define ERR_USERONCHANNEL 443
 
 # define ERR_NOSUCHCHANNEL 403
 # define ERR_NOTONCHANNEL 442
@@ -98,6 +101,26 @@ std::string Message::getMessage(int code, Client &client) const
         default:
             return "NO RESPONSE FOUND";
     }
+}
+
+std::string Message::getMessage(int code, Client &client, std::string &cmd) const
+{
+    std::string nickName = client.getNickname();
+    std::string userName = client.getUsername();
+    std::string serverName = "LosVSCode bro";
+    std::string serverVersion = "42";
+    std::string dateTime = timeNow();
+
+    switch (code)
+    {
+        case ERR_NEEDMOREPARAMS:
+            return ":" + serverName + " 461 " + nickName + " " + cmd + " :Not enough parameters\r\n";
+        case ERR_USERONCHANNEL:
+            return ":" + serverName + " 443 " + nickName + " " + cmd + " :Client is already in the Channel\r\n";
+        default:
+            return "NO RESPONSE FOUND";
+    }
+    
 }
 
 //funcion sendmessage

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:12:30 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/25 15:03:46 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,13 @@ class Channel
 		~Channel();
 
 		void removeClient(int fd);
-		bool addClient(Client c);
+		void addClient(Client c);
 		const std::vector<Client> getClients() const;
 		std::string getName();
 		void addAdmin(const Client &c);
+		void addInvitedClient(const Client &c);
+		void removeInvitedClient(const std::string &nick);
+		void removeOperator(const Client &c);
 		void setTopic(std::string topic);
 		
 		/* ANTHONY ↓: */
