@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 14:10:14 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/25 16:09:27 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,7 @@ Server::Server()
 	commands["PRIVMSG"] = new Privmsg();
 	commands["TOPIC"] = new Topic();
 	commands["INVITE"] = new Invite();
-	
-	//commands["PART"]
+	commands["PART"] = new Part();
 }
 
 Server::~Server()

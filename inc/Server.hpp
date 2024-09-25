@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 14:09:40 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/09/25 16:09:06 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # include "../inc/commands/Privmsg.hpp"
 # include "../inc/commands/Topic.hpp"
 # include "../inc/commands/Invite.hpp"
+# include "../inc/commands/Part.hpp"
 
 class Channel;
 class Command;
@@ -99,4 +100,4 @@ class Server
 		void deleteAllChannels();
 };
 
-std::vector<std::string> splitByDelimiter(const std::string &input, const std::string &delimiter);
+std::vector<std::string> ft_split(const std::string &input, const std::string &delimiter);
