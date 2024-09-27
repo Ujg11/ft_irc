@@ -35,6 +35,10 @@
 # define ERR_CHANOPRIVSNEEDED 482
 # define ERR_USERNOTINCHANNEL 441
 
+// Codigos especificos para el Mode
+
+# define RPL_CHANNELMODEIS 324
+
 
 std::string Message::timeNow() const //funcion que es para el server y guardase el resultado en una variable
 {
@@ -98,6 +102,10 @@ std::string Message::getMessage(int code, Client &client) const
             return ":" + serverName + " 482 " + nickName + " " + serverName + " :You are not channel operator\r\n";
         case ERR_USERNOTINCHANNEL:
             return ":" + serverName + " 441 " + nickName + " " + serverName + " :They aren't on that channel\r\n";
+        
+        // Errores especificos para el Mode
+        case RPL_CHANNELMODEIS:
+            return ":" + serverName + " 324 "+  nickName + " " + serverName +  "PONER ALGO AQUI\r\n";
         default:
             return "NO RESPONSE FOUND";
     }

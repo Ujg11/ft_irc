@@ -19,4 +19,4 @@ class Mode : public Command
 {
     public:
         void execute(Server &server, Client &c, std::vector<std::string> args);
-}
+};
