@@ -19,4 +19,12 @@ class Mode : public Command
 {
     public:
         void execute(Server &server, Client &c, std::vector<std::string> args);
+        bool validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *channel);
+        void applyModeChange(Server &server, Client &c, Channel *channel, std::vector<std::string> args);
+        bool handleInvitedOnly(Channel *channel, bool addMode, Server &server, Client &c);
+        void handleTopicMode(Channel *channel, bool addMode, Server &server, Client &c);
+        void handleKeyMode(Channel *channel, bool addMode, Server &server, Client &c, std::vector<std::string> &args, size_t &index);
+        void handleLimitMode(Channel*channel, bool addMode, Server &server, Client &c, std::vector<std::string> &args, size_t &index);
+        void handleOperatorMode(Channel *channel, bool addMode, Server &server, Client &c, std::vector<std::string> &args, size_t &index);
+        void broadcastModeChange(Server &server, Client &c, const std::string &channelName, const std::string &modeChange);
 };

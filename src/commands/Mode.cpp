@@ -196,7 +196,7 @@ void Mode::handleLimitMode(Channel *channel, bool addMode, Server &server, Clien
     }
 }
 
-void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Client&c, std::vector<std::string>, size_t &index)
+void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Client&c, std::vector<std::string> &args, size_t &index)
 {
     if (index + 1 < args.size())
     {
@@ -227,7 +227,7 @@ void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Cl
     }    
 }
 
-void Mode::broadcastModeChange(Server &server, Client &c, const std::string &channelName, const sd::string &modeChange)
+void Mode::broadcastModeChange(Server &server, Client &c, const std::string &channelName, const std::string &modeChange)
 {
     std::string message = server.getServerName() + "MODE" + channelName + " " + modeChange  + "\r\n";
     Channel *channel = server.getChannel(channelName);
