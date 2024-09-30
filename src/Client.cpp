@@ -105,3 +105,8 @@ bool Client::channelsJoined(const std::string &channelName)
 {
 	return std::find(joinedChannels.begin(), joinedChannels.end(), channelName) != joinedChannels.end();
 }
+
+bool Client::operator==(const Client &other) const
+{
+	return this->getFd() == other.getFd(); // Comparamos por el descriptor de archivo (fd), o podrías usar otro atributo como el nickname
+}

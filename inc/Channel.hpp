@@ -27,6 +27,7 @@ class Channel
 		bool invitedOnly; // Flag para indicar si el canal es solo para invitados
 		size_t maxClients; // Límite máximo de usuarios en el canal
 		std::string topic; // Tema del canal
+		bool topicRestricted; // Indica si solo los operadores pueden cambiar el topico
 		
 	public:
 		Channel(std::string name, std::string key, Client &admin);
@@ -60,5 +61,15 @@ class Channel
 
 		Client* getClientByName(const std::string &nickname);
 		/* TERMINO LO DE ANTHONY ⬆ */
+
+		std::string getCurrentChannelMode();
+		void setInvitedOnly(bool isInvitedOnly);
+		void setTopicRestriction(bool restricted);
+		void setKey(const std::string &channelkey);
+		void removeKey();
+		void setMaxClients(size_t maxUsers);
+		void removeUserLimit();
+		//void addAdmin(const Client &client);
+		void removeAdmin(const Client &client);
 };
 

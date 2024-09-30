@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 # include "../../inc/commands/Mode.hpp"
+# include "../../inc/Channel.hpp"
 
         /* Controla que los usuarios sean OP(operadores - admin)
             MODE tendra los siguientes modos(modificaciones):
@@ -30,7 +31,7 @@
 
 void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
 {
-    Channel *channel = nullptr;
+    Channel *channel = NULL;
 
     //  Validar si la solicitud del canal es correcta
     if (!validModeRequest(server, c, args, channel))
@@ -43,7 +44,7 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
     {
         std::string modes = channel->getCurrentChannelMode();
         std::string response = server.message.getMessage(324, c);
-        response += channe->getName() + " " + modes + "\r\n";
+        response += channel->getName() + " " + modes + "\r\n";
         server.message.sendMessage(c, response);
         return ;
     }
@@ -82,44 +83,49 @@ bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> 
 void Mode::applyModeChange(Server &server, Client &c, Channel *channel, std::vector<std::string> args)
 {
     bool addMode = true;
-    
     for (size_t i = 2; i < args.size(); i++) // o ++i
     {
-        switch(modeString[j])
+        std::string modeString = args[i];
+
+        for (size_t j = 0; j < modeString.size(); j++) // o ++j
         {
-            case '+':
-                addMode = true;
-                break;
-            case '-':
-                addMode = false;
-                break;
-            case 'i':
-                handleInvitedOnly(channel, addMode, server, c);
-                break;
-            case 'j':
-                handleTopicMode(channel, addMode, server, c);
-                break;
-            case 'k':
-                handleKeyMode(channel, addMode, server, c, i);
-                break;
-            case 'o':
-                handleOperatorMode(channel, addMode, server, c, i);
-                break;
-            case 'l':
-                handleLimitMode(channel, addMode, server, c, i);
-                break;
-            default:
-                c.sendError(472, c.getNickname(), "MODE", "Unknown mode flag.");
-                break;
+            switch(modeString[j])
+            {
+                case '+':
+                    addMode = true;
+                    break;
+                case '-':
+                    addMode = false;
+                    break;
+                case 'i':
+                    handleInvitedOnly(channel, addMode, server, c);
+                    break;
+                case 'j':
+                    handleTopicMode(channel, addMode, server, c);
+                    break;
+                case 'k':
+                    handleKeyMode(channel, addMode, server, c, args, i);
+                    break;
+                case 'o':
+                    handleOperatorMode(channel, addMode, server, c, args, i);
+                    break;
+                case 'l':
+                    handleLimitMode(channel, addMode, server, c, args, i);
+                    break;
+                default:
+                    c.sendError(472, c.getNickname(), "MODE", "Unknown mode flag.");
+                    break;
+            }
+    
         }
     }
 }
 
 // Modo de invitacion ("+i" o "-i")
-bool Mode::handleInvitedOnly(Channel *channel, bool addMode, Server &server, Client &c)
+void Mode::handleInvitedOnly(Channel *channel, bool addMode, Server &server, Client &c)
 {
     channel->setInvitedOnly(addMode);
-    broadcastModeChange(server, c, chanel->getName(), (addMode ? "+i" : "-i"));
+    broadcastModeChange(server, c, channel->getName(), (addMode ? "+i" : "-i"));
 }
 
 // Modo de restriccion de topico ("+t" o "-t")
@@ -157,7 +163,7 @@ void Mode::handleKeyMode(Channel *channel, bool addMode, Server &server, Client 
         if (index +  1 < args.size())
         {
             std::string password = args[++index];
-            if (channel-getKey() == password)
+            if (channel->getKey() == password)
             {
                 channel->removeKey();
                 broadcastModeChange(server, c, channel->getName(), "-k");
@@ -169,12 +175,12 @@ void Mode::handleKeyMode(Channel *channel, bool addMode, Server &server, Client 
         }
         else 
         {
-            c.sendError(461, c.getNickame(), "MODE", "Not enough parameters.");
+            c.sendError(461, c.getNickname(), "MODE", "Not enough parameters.");
         }
     }
 }
 
-void Mode::handleLimitMode(Channel *channel, bool addMode, Server &server, Client &c, std::vector<std::string>, size_t &index)
+void Mode::handleLimitMode(Channel *channel, bool addMode, Server &server, Client &c, std::vector<std::string> &args, size_t &index)
 {
     if (addMode)
     {
@@ -201,7 +207,7 @@ void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Cl
     if (index + 1 < args.size())
     {
         std::string targetUserName = args[++index]; //  o index++
-        Client *targetUser = server.getClientByName(targetUserName);
+        Client *targetUser = channel->getClientByName(targetUserName);
 
         if (!targetUser || !channel->isClient(*targetUser))
         {

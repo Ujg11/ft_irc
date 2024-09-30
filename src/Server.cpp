@@ -23,7 +23,7 @@ Server::Server()
 	commands["QUIT"] = new Quit();
 	commands["PASS"] = new Pass();
 	commands["NICK"] = new Nick();
-	//commands["MODE"]
+	commands["MODE"] = new Mode();
 	commands["KICK"] = new Kick();
 	commands["JOIN"] = new Join();
 	commands["PRIVMSG"] = new Privmsg();

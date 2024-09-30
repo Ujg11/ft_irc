@@ -35,6 +35,7 @@
 # include "../inc/commands/Pass.hpp"
 # include "../inc/commands/Kick.hpp"
 # include "../inc/commands/Join.hpp"
+# include "../inc/commands/Mode.hpp"
 # include "../inc/commands/ClasString.hpp"
 # include "../inc/commands/Nick.hpp"
 # include "../inc/commands/Privmsg.hpp"

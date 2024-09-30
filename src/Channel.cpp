@@ -291,3 +291,60 @@ void Invite::execute(Server &server, Client &user, const std::string &channelNam
 }
 
 */
+
+
+/* Anthony anadiendo denuevo */
+
+std::string Channel::getCurrentChannelMode()
+{
+	std::string modes;
+
+	if (invitedOnly)
+		modes += "i";	// Modo de solo invitacion.
+	if (!key.empty())
+		modes += "k";	// Modo con clave (password).
+	if (maxClients > 0)
+		modes += "l";	// Modo con limite de usuarios.
+	// Puedes agregar mas modos si tienes otras restricciones, como 't' para restringir la edicion de topicos.
+	return (modes);
+}
+
+void Channel::setInvitedOnly(bool isInvitedOnly)
+{
+	invitedOnly = isInvitedOnly;
+}
+
+void Channel::setTopicRestriction(bool restricted)
+{
+	topicRestricted = restricted;
+}
+
+void Channel::setKey(const std::string &channelkey)
+{
+	key = channelkey;
+}
+
+void Channel::removeKey()
+{
+	key.clear();
+}
+
+void Channel::setMaxClients(size_t maxUsers)
+{
+	maxClients = maxUsers;
+}
+
+void Channel::removeUserLimit()
+{
+	maxClients = 0;
+}
+
+/*void Channel::addAdmin(const Client &client)
+{
+	admins.push_back(client); // Agregamos al cliente a la lista de admins
+}*/
+
+void Channel::removeAdmin(const Client &client)
+{
+	admins.erase(std::remove(admins.begin(), admins.end(), client), admins.end());
+}
