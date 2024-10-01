@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:20:14 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/24 12:13:57 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:23:16 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,13 @@ static void updateNick(Server &s, Client &c, std::vector<std::string> args)
 		s.message.sendMessage(c, s.message.getMessage(433, c));
 		return ;
 	}
-	std::vector<std::string> channels = c.getJoinedChannels();
 	std::string oldNick = c.getNickname();
-	c.setNickname(newNick);	
-	std::string message = ":" + oldNick + "!" + c.getUsername() + "@" + c.getIp() + "NICK " + newNick + "\r\n";
-	for (size_t i = 0; i < channels.size(); i++)
+	c.setNickname(newNick);
+	std::vector<Client> clients = s.getClients();
+	std::string message = ":" + oldNick + " NICK :" + newNick + "\r\n";
+	for (size_t i = 0; i < clients.size(); i++)
 	{
-		Channel *channel = s.getChannel(channels[i]);
-		if (channel != NULL)
-		{
-			channel->broadcastMessage(message, c);
-		}
+		s.message.sendMessage(clients[i], message);
 	}
 }
 

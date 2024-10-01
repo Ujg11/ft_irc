@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/25 11:54:33 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/01 13:55:03 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # define ERR_NICKNAMEINUSE 433
 # define ERR_NONICKNAMEGIVEN 431
 # define ERR_ERRONEUSNICKNAME 432
+# define ERR_UNKNOWNCOMMAND 421
 
 // Codigos especificos para KICK y otros comandos
 
@@ -74,7 +75,9 @@ std::string Message::getMessage(int code, Client &client) const
             return ":" + serverName + " 003 " + nickName + " :This server was created at " + dateTime + "\r\n";
         case RPL_MYINFO:
             return ":" + serverName + " 004 " + nickName + " :" + serverName + " " + serverVersion + " " + "\r\n"; // con tal que envie el mensaje al cliente, ta bien
-
+        case ERR_UNKNOWNCOMMAND:
+            return ":" + serverName + " 421 " + nickName + " FOOBAR :Unknown command\r\n";
+        
         // Errores para NICK
         case ERR_NICKNAMEINUSE:
             return ":" + serverName + " 433 " + nickName + " :Nickname is already in use\r\n";

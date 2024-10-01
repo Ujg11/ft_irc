@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 16:09:27 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:18:52 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,6 +222,8 @@ void Server::processMessage(Client &cliente)
 			else
 				commands[order]->execute(*this, cliente, args);
 		}
+		else
+			message.sendMessage(cliente, message.getMessage(421, cliente));
 	}
 	cliente.clientBuffer.clear();
 	if (cliente.handShake == false)
@@ -473,4 +475,9 @@ void Server::removeChannel(const std::string &channelName)
 std::string Server::getServerName() const
 {
 	return serverName; // `serverName` sería un atributo de la clase Server
+}
+
+const std::vector<Client> Server::getClients() const
+{
+	return (clients);
 }

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 16:09:06 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:17:13 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ class Server
 		~Server();
 		std::string getPassword();
 		std::string getServerName();
+		const std::vector<Client> getClients() const;
 		Message message;
 		
 		void serverInit(int port, std::string passwd);
