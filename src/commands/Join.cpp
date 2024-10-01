@@ -111,26 +111,29 @@ void Join::execute(Server &server, Client &c, std::vector<std::string> args)
     std::string response;
 
     // Verifica que el comando tenga los argumentos correctos
-    if (args.size() < 2)
+    if (args.size() < 2) // El segundo argumento es el nombre del canal
     {
         response = server.message.getMessage(461, c); // "JOIN" requiere mas parametros
         server.message.sendMessage(c, response);
         return ;
     }
 
-    std::string channelsStr = args[1];
+    std::string channelsStr = args[1]; // Nombre del canal directamente
     std::string passwordsStr = args.size() > 2 ? args[2] : "";
 
     StringHandler strTool;
 
+    // Dividir si es necesario, soportando la union de multiples canales
     std::vector<std::string> channels = strTool.stringSplit(channelsStr, ",");
     std::vector<std::string> passwords = strTool.stringSplit(passwordsStr, ",");
 
+    // Iterar por los canales proporcionados
     for (size_t i = 0; i < channels.size(); i++) // o ++i
     {
         std::string channelName = channels[i];
         std::string password = i < passwords.size() ? passwords[i] : "";
 
+        // Llamar a al funcion para manejar la union o creacion del canal
         if (!handleJoinChannel(c, server, channelName, password))
         {
             response = "ERROR: No such channel: " + channelName + "\r\n";
