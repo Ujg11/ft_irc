@@ -19,7 +19,7 @@ class Mode : public Command
 {
     public:
         void execute(Server &server, Client &c, std::vector<std::string> args);
-        bool validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *channel);
+        bool validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *&channel);
         void applyModeChange(Server &server, Client &c, Channel *channel, std::vector<std::string> args);
         void handleInvitedOnly(Channel *channel, bool addMode, Server &server, Client &c);
         void handleTopicMode(Channel *channel, bool addMode, Server &server, Client &c);

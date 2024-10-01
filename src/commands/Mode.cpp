@@ -53,7 +53,7 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
     applyModeChange(server, c, channel, args);
 }
 
-bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *channel)
+bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *&channel)
 {
     if (args.size() < 2)
     {
