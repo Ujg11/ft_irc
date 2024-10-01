@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/01 13:55:03 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:44:10 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ std::string Message::getMessage(int code, Client &client) const
 {
     std::string nickName = client.getNickname();
     std::string userName = client.getUsername();
-    std::string serverName = "LosVSCode bro";
+    std::string serverName = "LosVSCode";
     std::string serverVersion = "42";
     std::string dateTime = timeNow();
 
