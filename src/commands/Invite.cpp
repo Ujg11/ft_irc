@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 11:16:36 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 14:11:27 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:03:20 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ void Invite::execute(Server &server, Client &c, std::vector<std::string> args)
 	Channel *channel = server.getChannel(channelName);
 	if (channel == NULL)
 	{
-		server.message.sendMessage(c, server.message.getMessage(461, c));
+		server.message.sendMessage(c, server.message.getMessage(403, c));
 		return ;
 	}
-	if (channel->isClient(c))
+	if (!channel->isClient(c))
 	{
 		server.message.sendMessage(c, server.message.getMessage(442, c));
 		return ;
@@ -42,7 +42,7 @@ void Invite::execute(Server &server, Client &c, std::vector<std::string> args)
 	if (channel->isClient(*clientInvited))
 	{
 		std::string chan = channel->getName();
-		server.message.sendMessage(c, server.message.getMessage(461, c, chan));
+		server.message.sendMessage(c, server.message.getMessage(443, c, chan));
 		return ;
 	}
 	//Si el canal esta en solo invitacion debes de ser operador

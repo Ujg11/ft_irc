@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 14:21:42 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 16:03:30 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:08:16 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ void Part::execute(Server &server, Client &c, std::vector<std::string> args)
 		for (size_t i = 1; i < args.size(); i++)
 		   message += args[i] + " ";
 		if (!message.empty() && message[message.length() - 1] == ' ')
-		message.erase(message.length() - 1);
-		message += "\r\n";
+			message.erase(message.length() - 1);
 	}
 	for (size_t i = 0; i < channelsNames.size(); ++i)
 	{

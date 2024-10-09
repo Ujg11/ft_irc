@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/01 16:14:56 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/09 17:45:06 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,6 +312,39 @@ void Server::closeFds()
 	}
 }
 
+bool Server::isClientInChannel(int cliFd, Channel &c)
+{
+	std::vector<Client> llista = c.getClients();
+	for (size_t i = 0; i < llista.size(); i++)
+	{
+		if (llista[i].getFd() == cliFd)
+			return (true);
+	}
+	return (false);
+}
+
+void Server::removeClientFromChannel(Client &client, Channel &channel)
+{
+		channel.removeClient(client);
+		channel.removeOperator(client);
+		if (channel.isEmpty())
+			removeChannel(channel.getName());
+}
+
+//Enviamos notificacion a cada canal y eliminamos al cliente de cada canal al que este unido
+void Server::broadcastQuitMessage(Client &client, std::string &message)
+{
+	std::vector<std::string> clientChannels = client.getJoinedChannels();
+
+	for (std::vector<std::string>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it)
+	{
+		std::string channelName = *it;
+		Channel *chan = getChannel(channelName);
+		chan->broadcastMessage(message, client);
+		removeClientFromChannel(client, *chan);
+	}
+}
+
 //Borrem un client de la llista e cleints i de la llista d'fds
 void Server::clearClient(int fd)
 {
@@ -332,7 +365,6 @@ void Server::clearClient(int fd)
 		}
 	}
 	close(fd);
-	//ClearClientFromChannel
 }
 
 Channel *Server::create_channel(const std::string &name, const std::string &key, Client &client)
@@ -386,7 +418,7 @@ void Server::handlePrivMessag(Client &sender, const std::string &reciever, const
 	{
 		if (it->getNickname() == reciever)
 		{
-			std::string fullMessage = "<" + sender.getNickname() + "> " + message;
+			std::string fullMessage = ":" + sender.getPrefix() + " PRIVMSG " + reciever + " :" + message;
 			send(it->getFd(), fullMessage.c_str(), fullMessage.length(), 0);
 			return ;
 		}
@@ -457,7 +489,7 @@ Channel* Server::getChannel(const std::string &channelName)
 		if (channels[i]->getName() == channelName)
 			return channels[i]; // Devuelve el puntero al canal si se encuentra
 	}
-	return NULL; // Retorna nullptr si no se encuentra el canal
+	return NULL; // Retorna NULL si no se encuentra el canal
 }
 
 void Server::removeChannel(const std::string &channelName)

@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/01 14:17:13 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:41:30 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,10 @@ class Server
 		void handlePrivMessag(Client &sender, const std::string &reciever, const std::string &message);
 		void handleChannelMessage(Client &sender, const std::string &channel, const std::string &message);
 		bool isExistentChannel(const std::string &name);
+
+		bool isClientInChannel(int cliFd, Channel &c);
+		void broadcastQuitMessage(Client &client, std::string &message);
+		
 		//Channel findChannel(const std::string &name);
 		Client *findClient(std::string nick);
 		Client *findClient(int fd);
@@ -92,6 +96,7 @@ class Server
 		Channel* getChannel(const std::string &channelName);
 		//Client* getClientByName(const std::string &nickname);
 		void removeChannel(const std::string &channelName);
+		void removeClientFromChannel(Client &client, Channel &channel);
 
 		std::string getServerName() const;
 
