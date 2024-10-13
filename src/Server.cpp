@@ -6,13 +6,11 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/09 17:45:06 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:38:49 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
-
-
 
 bool Server::signal = false;
 

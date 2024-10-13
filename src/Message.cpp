@@ -6,11 +6,11 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/01 14:44:10 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:39:17 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "Message.hpp"
+# include "../inc/Message.hpp"
 
 # define RPL_WELCOME 1
 # define RPL_YOURHOST 2

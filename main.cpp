@@ -6,11 +6,11 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 15:00:51 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/20 13:01:59 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:39:35 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Server.hpp"
+#include "inc/Server.hpp"
 
 /*int main()
 {
