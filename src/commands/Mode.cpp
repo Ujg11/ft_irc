@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrimald <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 12:49:41 by agrimald          #+#    #+#             */
-/*   Updated: 2024/09/20 12:49:42 by agrimald         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:45:22 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
 
 bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> args, Channel *&channel)
 {
-    if (args.size() < 2)
+    if (args.size() < 1)
     {
         c.sendError(461, c.getNickname(), "MODE", "Not enough arguments.");
         return false;
     }
 
-    std::string channelName = args[1];
+    std::string channelName = args[0];
     channel = server.getChannel(channelName);
 
     if (!channel)

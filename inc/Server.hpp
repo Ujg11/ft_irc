@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:44:15 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/09 15:41:30 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:29:35 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 # include "../inc/commands/Topic.hpp"
 # include "../inc/commands/Invite.hpp"
 # include "../inc/commands/Part.hpp"
+# include "../inc/commands/Who.hpp"
 
 class Channel;
 class Command;

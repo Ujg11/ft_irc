@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 15:03:46 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/15 16:16:47 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ class Channel
 		void removeInvitedClient(const std::string &nick);
 		void removeOperator(const Client &c);
 		void setTopic(std::string topic);
+		bool isInvited(const Client &user) const;
+		bool isInvited(const std::string &userName) const;
+		std::string getUserList();
 		
 		/* ANTHONY ↓: */
 
@@ -53,7 +56,6 @@ class Channel
 		void broadcast(const std::string &message);
 
 		bool isInvitedOnly() const;
-		bool isInvited(const Client &user) const;
 		bool isFull() const;
 		std::string getKey() const;
 		void broadcastMessage(const std::string &message, const Client &c);

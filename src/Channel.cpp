@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/09/25 15:06:22 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/15 17:26:46 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Channel::Channel(std::string name, std::string key, Client &admin)
 	this->topic = "";
 	this->invitedOnly = false;
 	addAdmin(admin);
+	addClient(admin);
 }
 
 Channel::~Channel()
@@ -53,12 +54,51 @@ std::string Channel::getName()
 	return (name);
 }
 
-/* ANTHONY ↓: */
+std::string Channel::getUserList()
+{
+	std::ostringstream userList;
+	
+	for (size_t i = 0; i < clients.size(); i++)
+	{
+		userList << clients[i].getNickname();
+		if (i < clients.size() - 1)
+		{
+			userList << " ";
+		}
+	}
+	return userList.str();
+}
 
 void Channel::addAdmin(const Client &c)
 {
-	if (this->isOperator(c))
-		admins.push_back(c);
+	for (size_t i = 0; i < admins.size(); i++)
+	{
+		if (admins.at(i).getNickname() == c.getNickname())
+			return ;
+	}
+	admins.push_back(c);
+}
+
+/* ANTHONY ↓: *; */
+
+bool Channel::isClient(const Client &client) const
+{
+	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+	{
+		if (clients[i].getFd() == client.getFd())
+			return true; // El cliente esta en el canal.
+	}
+	return false; // El cliente no esta en el canal.
+}
+
+bool Channel::isOperator(const Client &client) const
+{
+	for (size_t i = 0; i < admins.size(); i++) // o poner ++i
+	{
+		if (admins[i].getFd() == client.getFd())
+			return true; // El cliente es un operador.
+	}
+	return false; // El cliente no es un operador.
 }
 
 void Channel::addInvitedClient(const Client &c)
@@ -83,25 +123,7 @@ void Channel::removeInvitedClient(const std::string &nick)
 	}
 }
 
-bool Channel::isClient(const Client &client) const
-{
-	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
-	{
-		if (clients[i].getFd() == client.getFd())
-			return true; // El cliente esta en el canal.
-	}
-	return false; // El cliente no esta en el canal.
-}
 
-bool Channel::isOperator(const Client &client) const
-{
-	for (size_t i = 0; i < admins.size(); i++) // o poner ++i
-	{
-		if (admins[i].getFd() == client.getFd())
-			return true; // El cliente es un operador.
-	}
-	return false; // El cliente no es un operador.
-}
 
 void Channel::removeClient(const Client &client)
 {
@@ -127,11 +149,6 @@ void Channel::removeOperator(const Client &c)
 	}
 }
 
-bool Channel::isEmpty() const
-{
-	return clients.empty(); // Retorna true si no hay clientes en el canal.
-}
-
 /* NOTA:
 
 	. En estos 4 metodos que hice no hay variable operador y tampoco clients
@@ -151,6 +168,11 @@ void Channel::broadcast(const std::string &message)
 	}
 }
 
+bool Channel::isEmpty() const
+{
+	return clients.empty(); // Retorna true si no hay clientes en el canal.
+}
+
 /* FUNCIONES QUE UTILIZAMOS EN JOIN AQUI ABAJO */
 
 bool Channel::isInvitedOnly() const
@@ -161,6 +183,16 @@ bool Channel::isInvitedOnly() const
 bool Channel::isInvited(const Client &user) const
 {
 	return std::find(invitedClients.begin(), invitedClients.end(), user.getNickname()) != invitedClients.end();
+}
+
+bool Channel::isInvited(const std::string &userName) const
+{
+	for (size_t i = 0; i < invitedClients.size(); i++)
+	{
+		if (userName == invitedClients.at(i))
+			return (true);
+	}
+	return (false);
 }
 
 bool Channel::isFull() const

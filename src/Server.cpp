@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/10 17:38:49 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:54:36 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool Server::signal = false;
 Server::Server()
 {
 	this->socketFd = -1;
-	this->serverName = "LosVSCode bro";
+	this->serverName = "LosVSCode";
 	commands["QUIT"] = new Quit();
 	commands["PASS"] = new Pass();
 	commands["NICK"] = new Nick();
@@ -28,6 +28,7 @@ Server::Server()
 	commands["TOPIC"] = new Topic();
 	commands["INVITE"] = new Invite();
 	commands["PART"] = new Part();
+	commands["WHO"] = new Who();
 }
 
 Server::~Server()
@@ -219,9 +220,11 @@ void Server::processMessage(Client &cliente)
 			}
 			else
 				commands[order]->execute(*this, cliente, args);
-		}
+		}	
 		else
+		{
 			message.sendMessage(cliente, message.getMessage(421, cliente));
+		}
 	}
 	cliente.clientBuffer.clear();
 	if (cliente.handShake == false)

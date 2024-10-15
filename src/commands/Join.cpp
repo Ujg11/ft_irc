@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 17:46:18 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/09 13:53:08 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:22:09 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,130 +14,92 @@
 
 void Join::createNewChannel(Client &user, Server &server, const std::string &channelName, const std::string &password)
 {
-    // Crear un nuevo canal
-    Channel *newChannel = server.create_channel(channelName, password, user);
-    if (!newChannel)
-    {
-        std::cerr << "Failed to create new channel" << std::endl;
-        return ;
-    }
-
-    // Agregar al usuario y hacerlo operador(admin)
-    newChannel->addAdmin(user);
-    newChannel->addClient(user);
-    
-    user.addJoinedChannel(channelName);
-
-    // Notificar a los usuarios del canal
-    std::string response = ":" + user.getNickname() + " JOIN " + channelName + "\r\n";
-    server.message.sendMessage(user, response);
-
-    // Enviar los nombers del canal al usuario
-    server.message.sendMessage(user, "Bienvenidos al canal " + channelName + "\r\n");
+	server.create_channel(channelName, password, user);
+	
+	std::string joinMessage = ":" + user.getNickname() + " JOIN " + channelName + "\r\n";
+	server.message.sendMessage(user, joinMessage);
+	std::string topicMessage = ":" + server.getServerName() + " 331 " + user.getNickname() + " " + channelName + " :No topic is set\r\n";
+	server.message.sendMessage(user, topicMessage);
 }
 
-void Join::handleExistingChannel(Client &user, Server &server, Channel *channel, const std::string &channelName, const std::string &password)
+void Join::handleExistingChannel(Client &user, Server &server, Channel *channel, const std::string &channelName)
 {
-    std::string response;
-
-    // Verificar modos del canal ('i', 'l', 'k')
-    if (channel->isInvitedOnly() && !channel->isInvited(user))
-    {
-        response = server.message.getMessage(473, user); // No esta invitado
-        server.message.sendMessage(user, response);
-        return ;
-    }
-
-    if (channel->isFull())
-    {
-        response = server.message.getMessage(471, user); // Canal lleno
-        server.message.sendMessage(user, response);
-        return ;
-    }
-
-    if (!password.empty() && channel->getKey() != password)
-    {
-        response = server.message.getMessage(475, user); // Contrasena incorrecta
-        server.message.sendMessage(user, response);
-        return ;
-    }
-
-    // Agregar usuario al canal
-    channel->addClient(user);
-
-    //Añadido por Uri
-    channel->removeInvitedClient(user.getNickname());
-    
-    user.addJoinedChannel(channelName);
-
-    // Notificar a los usuarios del canal
-    response = ":" + user.getNickname() + " JOIN " + channelName + "\r\n";
-    channel->broadcastMessage(response, user);
-
-    // Enviar el topico del canal si existe
-    if (!channel->getTopic().empty())
-    {
-        response = ":" + server.getServerName() + " 332 " + user.getNickname() + " " + channelName + " :" + channel->getTopic() + "\r\n";
-        server.message.sendMessage(user, response);
-    }
-
-    // Enviar los nombres del canal
-    server.message.sendMessage(user, "Usuario en el canal: \r\n"); // Enviar nombres de usuario
+	if (channel->isFull())
+	{
+		std::string cmd = channelName;
+		server.message.sendMessage(user, server.message.getMessage(471, user, cmd));
+		return ;
+	}
+	if (channel->isInvitedOnly() && !channel->isInvited(user))
+	{
+		std::string cmd = channelName;
+		server.message.sendMessage(user, server.message.getMessage(473, user, cmd));
+		return ;
+	}
+	channel->removeInvitedClient(user.getNickname());
+	channel->addClient(user);
+	std::string joinMessage = ":" + user.getNickname() + " JOIN " + channelName + "\r\n";
+	channel->broadcastMessage(joinMessage, user);
+	server.message.sendMessage(user, joinMessage);
+	// Enviamos la lista de usuarios al cliente
+	/*std::string userList = ":" + server.getServerName() + " 353 " + user.getNickname() + " = " + channelName + " :" + channel->getUserList() + "\r\n";
+	server.message.sendMessage(user, userList);
+	std::string endUserList = ":" + server.getServerName() + " 366 " + user.getNickname() + " " + channelName + " :End of /NAMES list\r\n";
+	server.message.sendMessage(user, endUserList);*/
+	// Si hay, enviamos el topic al cliente que se acaba de unir
+	if (!channel->getTopic().empty())
+	{
+		std::string topicMessage = ":" + server.getServerName() + " 332 " + user.getNickname() + " " + channelName + " :" + channel->getTopic() + "\r\n";
+		server.message.sendMessage(user, topicMessage);
+	}
+	else
+	{
+		std::string topicMessage = ":" + server.getServerName() + " 331 " + user.getNickname() + " " + channelName + " :No topic is set\r\n";
+		server.message.sendMessage(user, topicMessage);
+	}
 }
 
 bool Join::handleJoinChannel(Client &user, Server &server, const std::string &channelName, const std::string &password)
 {
-    if (channelName.empty() || channelName[0] != '#')
-    {
-        server.message.sendMessage(user, "El nombre del canal debe de empezar con #\r\n");
-        return false;
-    }
-
-    Channel *channel = server.getChannel(channelName);
-    if(channel)
-    {
-        handleExistingChannel(user, server, channel, channelName, password);
-        return true;
-    }
-    else
-    {
-        createNewChannel(user, server, channelName, password);
-        return true;
-    }
+	if (channelName.empty() || channelName[0] != '#')
+	{
+		server.message.sendMessage(user, "El nombre del canal debe empezar con #\r\n");
+		return (false);
+	}
+	Channel *channel = server.getChannel(channelName);
+	if (channel)
+	{
+		if (!password.empty() && channel->getKey() != password)
+		{
+			std::string cmd = channelName;
+			server.message.sendMessage(user, server.message.getMessage(473, user, cmd));
+			return (false);
+		}
+		handleExistingChannel(user, server, channel, channelName);
+	}
+	else
+		createNewChannel(user, server, channelName, password);
+	return (true);
 }
 
 void Join::execute(Server &server, Client &c, std::vector<std::string> args)
 {
-    std::string response;
-
-    // Verifica que el comando tenga los argumentos correctos
-    if (args.size() < 2) // El segundo argumento es el nombre del canal
-    {
-        response = server.message.getMessage(461, c); // "JOIN" requiere mas parametros
-        server.message.sendMessage(c, response);
-        return ;
-    }
-
-    std::string channelsStr = args[1]; // Nombre del canal directamente
-    std::string passwordsStr = args.size() > 2 ? args[2] : "";
-
-    StringHandler strTool;
-
-    // Dividir si es necesario, soportando la union de multiples canales
-    std::vector<std::string> channels = strTool.stringSplit(channelsStr, ",");
-    std::vector<std::string> passwords = strTool.stringSplit(passwordsStr, ",");
-
-    // Iterar por los canales proporcionados
-    for (size_t i = 0; i < channels.size(); i++) // o ++i
-    {
-        std::string channelName = channels[i];
-        std::string password = i < passwords.size() ? passwords[i] : "";
-
-        // Llamar a al funcion para manejar la union o creacion del canal
-        if (!handleJoinChannel(c, server, channelName, password))
-        {
-            response = "ERROR: No such channel: " + channelName + "\r\n";
-            server.message.sendMessage(c, response);
-        }
-    }
+	if (args.size() < 1)
+	{
+		std::string cmd = "JOIN";
+		server.message.sendMessage(c, server.message.getMessage(461, c, cmd));
+		return ;
+	}
+	std::vector<std::string> channels = ft_split(args.at(0), ",");
+	std::vector<std::string> passwords;
+	if (args.size() > 1)
+		passwords = ft_split(args.at(1), ",");
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		std::string channelName = channels.at(i);
+		std::string password = "";
+		if (i < passwords.size())
+			password = passwords.at(i);
+		handleJoinChannel(c, server, channelName, password);
+	}
 }
