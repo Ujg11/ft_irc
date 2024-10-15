@@ -57,23 +57,30 @@ bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> 
 {
     if (args.size() < 1)
     {
-        c.sendError(461, c.getNickname(), "MODE", "Not enough arguments.");
+        c.sendError(461, c.getNickname(), " MODE ", "Not enough arguments. (MODEEE)");
         return false;
     }
 
     std::string channelName = args[0];
     channel = server.getChannel(channelName);
 
+    if (args.size() < 1 || args[0].empty())
+    {
+        c.sendError(461, c.getNickname(), " MODE ", "Not enough parameters.");
+        return false;
+    }
     if (!channel)
     {
-        c.sendError(403, c.getNickname(), "MODE", "No such channel.");
+        c.sendError(403, c.getNickname(), " MODE ", "No such channel.");
         return false;
     }
 
     // Verificar que el cliente sea un operador
+    std::cout << "Valor: " << channel->isOperator(c) << std::endl;
     if (!channel->isOperator(c))
     {
-        c.sendError(482, c.getNickname(), "MODE", "You're not a channel operator.");
+        std::cout << "Valor: " << channel->isOperator(c) << std::endl;
+        c.sendError(482, c.getNickname(), " MODE ", "You're not a channel operator.");
         return false;
     }
 
