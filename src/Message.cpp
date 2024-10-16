@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/16 15:42:16 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 16:39:18 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,7 @@ std::string Message::getMessage(int code, Client &client) const
 		// Errores especificos del KICK // crear channelName
 		case ERR_NOSUCHCHANNEL:
 			return ":" + serverName + " 403 " + nickName + " " + serverName + " :No such channel\r\n";
-		case ERR_NOTONCHANNEL:
-			return ":" + serverName + " 442 " + nickName + " " + serverName + " :You're not on taht channel\r\n";
+		
 		
 		case ERR_USERNOTINCHANNEL:
 			return ":" + serverName + " 441 " + nickName + " " + serverName + " :They aren't on that channel\r\n";
@@ -140,6 +139,8 @@ std::string Message::getMessage(int code, Client &client, std::string &cmd) cons
 			return ":" + serverName + " 473 " + nickName + " " + cmd + " :Cannot join channel (+i)\r\n";
 		case ERR_CHANOPRIVSNEEDED:
 			return ":" + serverName + " 482 " + nickName + " " + cmd + " :You are not channel operator\r\n";
+		case ERR_NOTONCHANNEL:
+			return ":" + serverName + " 442 " + nickName + " " + cmd + " :You're not on taht channel\r\n";
 		default:
 			return "NO RESPONSE FOUND";
 	}

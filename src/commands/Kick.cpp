@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:52:30 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/16 11:52:11 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 17:49:50 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,24 @@ std::string Kick::FindReason(std::vector<std::string> &args)
 {
 	if (args.size() > 2)
 	{
-		std::string reason = args[2];
-		if (reason[0] == ':') // Elimina el ':' del motivo
-			return reason.substr(1); // Elimina el primer caracter
+		std::string reason = "";
+		for (size_t i = 2; i < args.size(); i++)
+		{
+			reason += " " + args[i]; // No redeclares la variable reason
+		}
+		// Si el motivo está vacío, no eliminar el primer caracter
+		if (!reason.empty())
+		{
+			// Eliminar el espacio inicial
+			reason.erase(0, 1);
+
+			// Elimina el ':' del motivo si está presente
+			if (reason[0] == ':')
+				return reason.substr(1); // Elimina el primer caracter ':'
+		}
 		return reason;
 	}
-	return ""; // no hay motivo proporcionado
+	return ""; // No se proporcionó motivo
 }
 /* Ejemplo  de esta funcion (FindReason):
 
@@ -72,10 +84,10 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 	// Verificar si se proporcionaron suficientes parametros
 	if (args.size() < 2)
 	{
-		c.sendError(461, c.getNickname(), "KICK", "Not enough parameters");
+		std::string cmd = "KICK";
+		server.message.sendMessage(c, server.message.getMessage(461, c, cmd));
 		return ;
 	}
-
 	// Obtener el canal o canales del usuario para expulsar
 	std::vector<std::string> channels = SplitChannels(args[0]);
 	std::vector<std::string> usersToKick = SplitUsers(args[1]);
@@ -86,26 +98,25 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 	for (size_t i = 0; i < channels.size(); i++)
 	{
 		std::string &channelName = channels[i];
-
-		// Verificar si el canal existe
 		Channel *channel = server.getChannel(channelName);
 		if (!channel)
 		{
-			c.sendError(403, c.getNickname(), "KICK", "No such channel");
+			std::string cmd = channelName;
+			server.message.sendMessage(c, server.message.getMessage(403, c, cmd));
 			continue;
 		}
-
 		// Verificar si el cliente que ejecuta el KICK esta en el canal
 		if (!channel->isClient(c))
 		{
-			c.sendError(442, c.getNickname(), "KICK", "You're not on that channel");
+			std::string cmd = channelName;
+			server.message.sendMessage(c, server.message.getMessage(442, c, cmd));
 			continue;
 		}
-
 		// Verificar si el cliente es un operador del canal
 		if (!channel->isOperator(c))
 		{
-			c.sendError(482, c.getNickname(), "KICK", "You are not channel operator");
+			std::string cmd = channelName;
+			server.message.sendMessage(c, server.message.getMessage(482, c, cmd));
 			continue;
 		}
 
@@ -116,7 +127,8 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 			// Verificar si el usuario a expulsar esta en el canal
 			if (!clientToKick)
 			{
-				c.sendError(441, c.getNickname(), "KICK", "They aren't on that channel");
+				std::string errMsg = ":LosVSCode 441 " + c.getNickname() + " " + userToKick + " " + channelName + " :They aren't on that channel\r\n"; 
+				server.message.sendMessage(c, errMsg);
 				continue;
 			}
 			// Realizar el KICK: Notificar a todos en el canal
@@ -127,10 +139,10 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 				ss << " :" << reason;
 			ss << "\r\n";
 			channel->broadcast(ss.str());
-
 			// Remover al cliente del canal
+			clientToKick->removeJoinedChannel(channelName);
 			channel->removeClient(clientToKick->getFd());
-
+			
 			// Si el canal queda vacio, eliminar del servidor
 			if (channel->isEmpty())
 			{
