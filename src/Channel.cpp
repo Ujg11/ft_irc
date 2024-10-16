@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/16 11:59:05 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:10:45 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ std::string Channel::getUserList()
 	
 	for (size_t i = 0; i < clients.size(); i++)
 	{
+		if (isOperator(clients[i]))
+			userList << '@';
 		userList << clients[i].getNickname();
 		if (i < clients.size() - 1)
 		{
@@ -134,15 +136,13 @@ void Channel::removeInvitedClient(const std::string &nick)
 	}
 }
 
-
-
 void Channel::removeClient(const Client &client)
 {
-	for (size_t i = 0; i < clients.size(); i++) // o poner ++i
+	for (size_t i = 0; i < clients.size(); i++)
 	{
 		if (clients[i].getFd() == client.getFd())
 		{
-			clients.erase(clients.begin() + i); // Elimina el cliente del canal.
+			clients.erase(clients.begin() + i);
 			return ;
 		}
 	}

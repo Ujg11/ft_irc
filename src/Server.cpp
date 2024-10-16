@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:45:05 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/15 18:54:36 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:43:34 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,8 +328,10 @@ void Server::removeClientFromChannel(Client &client, Channel &channel)
 {
 		channel.removeClient(client);
 		channel.removeOperator(client);
+		client.removeJoinedChannel(channel.getName());
 		if (channel.isEmpty())
 			removeChannel(channel.getName());
+		
 }
 
 //Enviamos notificacion a cada canal y eliminamos al cliente de cada canal al que este unido
@@ -341,8 +343,11 @@ void Server::broadcastQuitMessage(Client &client, std::string &message)
 	{
 		std::string channelName = *it;
 		Channel *chan = getChannel(channelName);
-		chan->broadcastMessage(message, client);
-		removeClientFromChannel(client, *chan);
+		if (chan)
+		{
+			chan->broadcastMessage(message, client);
+			removeClientFromChannel(client, *chan);
+		}
 	}
 }
 
@@ -376,11 +381,11 @@ Channel *Server::create_channel(const std::string &name, const std::string &key,
 			return (NULL);
 	}
 	Channel *c = new Channel(name, key, client);
-    if (c == NULL)
-    {
-        std::cerr << "Error: memory is full" << std::endl;
-        return NULL;
-    }
+	if (c == NULL)
+	{
+		std::cerr << "Error: memory is full" << std::endl;
+		return NULL;
+	}
 	this->channels.push_back(c);
 	return (c);
 }
@@ -388,26 +393,26 @@ Channel *Server::create_channel(const std::string &name, const std::string &key,
 void Server::deleteChannel(const std::string &name)
 {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
-    {
-        if ((*it)->getName() == name)
-        {
-            delete *it;
-            channels.erase(it);
-            std::cout << "Channel " << name << " correctly deleted" << std::endl;
-            return;
-        }
-    }
-    std::cerr << "Error: Channel don't found" << name << std::endl;
+	{
+		if ((*it)->getName() == name)
+		{
+			delete *it;
+			channels.erase(it);
+			std::cout << "Channel " << name << " correctly deleted" << std::endl;
+			return;
+		}
+	}
+	std::cerr << "Error: Channel don't found" << name << std::endl;
 }
 
 void Server::deleteAllChannels()
 {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
-    {
-        delete *it;
-    }
-    channels.clear();
-    std::cout << "All the channels correctly deleted" << std::endl;
+	{
+		delete *it;
+	}
+	channels.clear();
+	std::cout << "All the channels correctly deleted" << std::endl;
 }
 
 
@@ -431,7 +436,14 @@ void Server::handleChannelMessage(Client &sender, const std::string &channel, co
 {
 	if (!isExistentChannel(channel))
 	{
-		this->message.sendMessage(sender, this->message.getMessage(403, sender));
+		std::string cmd = channel;
+		this->message.sendMessage(sender, this->message.getMessage(403, sender, cmd));
+		return ;
+	}
+	if (!sender.channelsJoined(channel))
+	{
+		std::string cmd = channel;
+		this->message.sendMessage(sender, this->message.getMessage(404, sender, cmd));
 		return ;
 	}
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
@@ -463,21 +475,21 @@ bool Server::isExistentChannel(const std::string &name)
 Client *Server::findClient(std::string nick)
 {
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
-        if (it->getNickname() == nick) {
-            return &(*it);
-        }
-    }
-    return NULL;
+		if (it->getNickname() == nick) {
+			return &(*it);
+		}
+	}
+	return NULL;
 }
 
 Client *Server::findClient(int fd)
 {
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
-        if (it->getFd() == fd) {
-            return &(*it);
-        }
-    }
-    return NULL;
+		if (it->getFd() == fd) {
+			return &(*it);
+		}
+	}
+	return NULL;
 }
 
 /* ANTHONY ↓: */
@@ -499,6 +511,7 @@ void Server::removeChannel(const std::string &channelName)
 	{
 		if (channels[i]->getName() == channelName)
 		{
+			delete channels[i];
 			channels.erase(channels.begin() + i); // Elimina el canal del servidor
 			break;
 		}

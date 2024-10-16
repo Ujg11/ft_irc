@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:01:10 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/16 12:32:47 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:42:16 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,6 @@ std::string Message::getMessage(int code, Client &client) const
 		// Errores para PRIVMSG
 		case ERR_NOSUCHNICK:
 			return ":" + serverName + " 401 " + nickName + " :No such nick/channel\r\n";
-		case ERR_CANNOTSENDTOCHAN:
-			return ":" + serverName + " 404 " + nickName + " :Cannot send to channel\r\n";
 		case ERR_NORECIPIENT:
 			return ":" + serverName + " 411 " + nickName + " :No recipient given (PRIVMSG)\r\n";
 		case ERR_NOTEXTTOSEND:
@@ -132,6 +130,8 @@ std::string Message::getMessage(int code, Client &client, std::string &cmd) cons
 			return ":" + serverName + " 443 " + nickName + " " + cmd + " :Client is already in the Channel\r\n";
 		case ERR_NOSUCHCHANNEL:
 			return ":" + serverName + " 403 " + nickName + " " + cmd + " :No such channel\r\n";
+		case ERR_CANNOTSENDTOCHAN:
+			return ":" + serverName + " 404 " + nickName + " " + cmd + " :Cannot send to channel\r\n";
 		case ERR_BADCHANNELKEY:
 			return ":" + serverName + " 475 " + nickName + " " + cmd + " :Cannot join channel (+k)\r\n";
 		case ERR_CHANNELISFULL:

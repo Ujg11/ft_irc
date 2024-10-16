@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 17:46:18 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/16 12:51:57 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:43:29 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void Join::createNewChannel(Client &user, Server &server, const std::string &cha
 	server.message.sendMessage(user, joinMessage);
 	std::string topicMessage = ":" + server.getServerName() + " 331 " + user.getNickname() + " " + channelName + " :No topic is set\r\n";
 	server.message.sendMessage(user, topicMessage);
+	user.addJoinedChannel(channelName);
 }
 
 void Join::handleExistingChannel(Client &user, Server &server, Channel *channel, const std::string &channelName)
@@ -57,6 +58,7 @@ void Join::handleExistingChannel(Client &user, Server &server, Channel *channel,
 		std::string topicMessage = ":" + server.getServerName() + " 331 " + user.getNickname() + " " + channelName + " :No topic is set\r\n";
 		server.message.sendMessage(user, topicMessage);
 	}
+	user.addJoinedChannel(channelName);
 }
 
 bool Join::handleJoinChannel(Client &user, Server &server, const std::string &channelName, const std::string &password)

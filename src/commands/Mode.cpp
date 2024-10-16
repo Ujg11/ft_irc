@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 12:49:41 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/16 12:59:10 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:49:13 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
     }
 
     // Si solo se pasa el nombre del canal, mostrar los modos actuales
-    if (args.size() == 2)
+    if (args.size() == 1)
     {
         std::string modes = channel->getCurrentChannelMode();
         std::string response = server.message.getMessage(324, c);

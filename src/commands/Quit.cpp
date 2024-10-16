@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 15:37:31 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/09 15:45:58 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:32:41 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void Quit::execute(Server &server, Client &c, std::vector<std::string> args)
 	if (reason.at(0) == ':')
 		reason = reason.substr(1);
 	//Enviar missatge RPL_QUIT al client
+	std::cout << "Client <" << c.getFd() << "> Disconnected" << std::endl;
 	std::string message = ":" + c.getPrefix() + " QUIT :" + reason + "\r\n";
 	server.broadcastQuitMessage(c, message);
 	server.clearClient(c.getFd());
-	std::cout << "Client <" << c.getFd() << "> Disconnected" << std::endl;
 }
