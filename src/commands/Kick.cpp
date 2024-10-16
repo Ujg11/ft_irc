@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/13 11:25:19 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/13 11:28:21 by ojimenez         ###   ########.fr       */
+/*   Created: 2024/09/17 17:52:30 by agrimald          #+#    #+#             */
+/*   Updated: 2024/10/16 11:52:11 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 		}
 
 		for (size_t j = 0; j < usersToKick.size(); j++)
-		{
+        {
 			std::string &userToKick = usersToKick[j];
 			Client *clientToKick = channel->getClientByName(userToKick);
 			// Verificar si el usuario a expulsar esta en el canal
@@ -139,3 +139,51 @@ void Kick::execute(Server &server, Client &c, std::vector<std::string> args)
 		}
 	}
 }
+/* Ejemplo de la funcion (KICK):
+
+	Supongamos que el cliente envia el comando:
+
+	KICK #channel usuario_a_expulsar :motivo del kick
+
+	el vector args sera:
+
+	args = {"#channel", "usuario_a_expulsar", ":motivo del kick"};
+
+	1. SplitChannels("#channel") devolvera ["#channel"].
+	2. FindReason(args) devolvera "motivo del kick".
+	3. Verificamos:
+		. Si el "channel" existe.
+		. Si el cliente que ejecuta el comando es operador en ese canal.
+		. Si el usuario a expulsar esta en ese canal.
+	4. Si todo esta correcto, expulsamos al usuario y notificamos a todos en el canal.
+*/
+
+/* NOTA:
+
+	. Si te da mal el la funcion execute en la linea 78
+		usar este EJEMPLO:
+					if (!channel)
+		{
+			c.sendError(ERR_NOSUCHCHANNEL, channelName);
+			continue;
+		}
+
+		if (!channel->isClient(c.getFd()))
+		{
+			c.sendError(ERR_NOTONCHANNEL, channelName);
+			continue;
+		}
+
+		if (!channel->isOperator(c.getFd()))
+		{
+			c.sendError(ERR_CHANOPRIVSNEEDED, channelName);
+			continue;
+		}
+
+		Client *clientToKick = channel->getClientByName(userToKick);
+		if (!clientToKick)
+		{
+			c.sendError(ERR_USERNOTINCHANNEL, channelName);
+			continue;
+		}
+*/

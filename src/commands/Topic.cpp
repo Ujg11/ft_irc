@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:05:40 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/09 16:07:00 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 12:39:44 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ void Topic::execute(Server &server, Client &c, std::vector<std::string> args)
 		}
 		return ;
 	}
-	if (!channel->isOperator(c))
+	if (channel->getTopicRestricted() && !channel->isOperator(c))
 	{
-		server.message.sendMessage(c, server.message.getMessage(482, c));
+		server.message.sendMessage(c, server.message.getMessage(482, c, channelName));
 		return ;
 	}
 	std::string newTopic = "";

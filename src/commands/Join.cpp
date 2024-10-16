@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 17:46:18 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/15 18:22:09 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 12:51:57 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,20 @@ bool Join::handleJoinChannel(Client &user, Server &server, const std::string &ch
 	Channel *channel = server.getChannel(channelName);
 	if (channel)
 	{
-		if (!password.empty() && channel->getKey() != password)
+		if (!channel->getKey().empty())
 		{
-			std::string cmd = channelName;
-			server.message.sendMessage(user, server.message.getMessage(473, user, cmd));
-			return (false);
+			if (password.empty())
+			{
+				std::string cmd = channelName;
+				server.message.sendMessage(user, server.message.getMessage(475, user, cmd));
+				return (false);
+			}
+			if (channel->getKey() != password)
+			{
+				std::string cmd = channelName;
+				server.message.sendMessage(user, server.message.getMessage(475, user, cmd));
+				return (false);
+			}
 		}
 		handleExistingChannel(user, server, channel, channelName);
 	}

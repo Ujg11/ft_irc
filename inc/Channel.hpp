@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:07:00 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/15 16:16:47 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 11:57:57 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ class Channel
 		bool isInvited(const Client &user) const;
 		bool isInvited(const std::string &userName) const;
 		std::string getUserList();
+		bool getTopicRestricted() const;
+		void serTopicRestricted(bool t);
 		
 		/* ANTHONY ↓: */
 

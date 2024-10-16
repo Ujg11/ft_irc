@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:08:06 by ojimenez          #+#    #+#             */
-/*   Updated: 2024/10/15 17:26:46 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 11:59:05 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::Channel(std::string name, std::string key, Client &admin)
 	this->key = key;
 	this->topic = "";
 	this->invitedOnly = false;
+	this->topicRestricted = true;
 	addAdmin(admin);
 	addClient(admin);
 }
@@ -77,6 +78,16 @@ void Channel::addAdmin(const Client &c)
 			return ;
 	}
 	admins.push_back(c);
+}
+
+bool Channel::getTopicRestricted() const
+{
+	return (this->topicRestricted);
+}
+
+void Channel::serTopicRestricted(bool t)
+{
+	this->topicRestricted = t;
 }
 
 /* ANTHONY ↓: *; */

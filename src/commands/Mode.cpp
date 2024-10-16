@@ -6,7 +6,7 @@
 /*   By: ojimenez <ojimenez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 12:49:41 by agrimald          #+#    #+#             */
-/*   Updated: 2024/10/15 18:45:22 by ojimenez         ###   ########.fr       */
+/*   Updated: 2024/10/16 12:59:10 by ojimenez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> 
         c.sendError(482, c.getNickname(), " MODE ", "You're not a channel operator.");
         return false;
     }
-
     return true;
 }
 
