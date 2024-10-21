@@ -13,6 +13,9 @@
 # include "../../inc/commands/Mode.hpp"
 # include "../../inc/Channel.hpp"
 
+# define RPL_CHANNELMODES(servername, nickname, channel, flag) \
+            (std::string(":" + servername + " 324 " + nickname + " " + channel + " " + modes))
+
         /* Controla que los usuarios sean OP(operadores - admin)
             MODE tendra los siguientes modos(modificaciones):
 
@@ -42,10 +45,12 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
     // Si solo se pasa el nombre del canal, mostrar los modos actuales
     if (args.size() == 1)
     {
-        std::string modes = channel->getCurrentChannelMode();
-        std::string response = server.message.getMessage(324, c);
-        response += channel->getName() + " " + modes + "\r\n";
-        server.message.sendMessage(c, response);
+        std::string channelName = channel->getName();
+        std::string modes = channel->getAllModes();
+
+        std::string response = "MODE " + channelName + " " + modes + "\r\n";
+
+        server.sendResponse(c.getFd(), RPL_CHANNELMODES(server.getServerName(), c.getNickname(), channelName, modes));
         return ;
     }
 
@@ -66,21 +71,20 @@ bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> 
 
     if (args.size() < 1 || args[0].empty())
     {
-        c.sendError(461, c.getNickname(), " MODE ", "Not enough parameters.");
+        c.sendError(461, c.getNickname(), "MODE", "Not enough parameters.");
         return false;
     }
     if (!channel)
     {
-        c.sendError(403, c.getNickname(), " MODE ", "No such channel.");
+        c.sendError(403, c.getNickname(), "MODE", "No such channel.");
         return false;
     }
 
     // Verificar que el cliente sea un operador
-    std::cout << "Valor: " << channel->isOperator(c) << std::endl;
+    //std::cout << "Fisrt client: " << channel->isOperator(c) << std::endl;
     if (!channel->isOperator(c))
     {
-        std::cout << "Valor: " << channel->isOperator(c) << std::endl;
-        c.sendError(482, c.getNickname(), " MODE ", "You're not a channel operator.");
+        c.sendError(482, c.getNickname(), "MODE", "You're not a channel operator.");
         return false;
     }
     return true;
@@ -89,7 +93,7 @@ bool Mode::validModeRequest(Server &server, Client &c, std::vector<std::string> 
 void Mode::applyModeChange(Server &server, Client &c, Channel *channel, std::vector<std::string> args)
 {
     bool addMode = true;
-    for (size_t i = 2; i < args.size(); i++) // o ++i
+    for (size_t i = 1; i < args.size(); i++) // o ++i
     {
         std::string modeString = args[i];
 
@@ -106,7 +110,7 @@ void Mode::applyModeChange(Server &server, Client &c, Channel *channel, std::vec
                 case 'i':
                     handleInvitedOnly(channel, addMode, server, c);
                     break;
-                case 'j':
+                case 't':
                     handleTopicMode(channel, addMode, server, c);
                     break;
                 case 'k':
@@ -206,6 +210,32 @@ void Mode::handleLimitMode(Channel *channel, bool addMode, Server &server, Clien
         channel->removeUserLimit();
         broadcastModeChange(server, c, channel->getName(), "-l");
     }
+
+    /*if (addMode)
+    {
+        if (index + 1 < args.size())
+        {
+            size_t limit = std::atoi(args[++index].c_str());
+            if (limit > 0)
+            {
+                channel->setMaxClients(limit);
+                broadcastModeChange(server, c, channel->getName(), "+l " + args[index]);
+            }
+            else
+            {
+                c.sendError(461, c.getNickname(), "MODE", "Invalid limit.");
+            }
+        }
+        else
+        {
+            c.sendError(461, c.getNickname(), "MODE", "Not enough parameters for +l.");
+        }
+    }
+    else
+    {
+        channel->removeUserLimit();
+        broadcastModeChange(server, c, channel->getName(), "-l");
+    }*/
 }
 
 void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Client&c, std::vector<std::string> &args, size_t &index)
@@ -247,4 +277,9 @@ void Mode::broadcastModeChange(Server &server, Client &c, const std::string &cha
     {
         channel->broadcastMessage(message, c);
     }
+
+    /*Channel *channel = server.getChannel(channelName);
+
+    std::string response = "MODE " + channelName + " " + modeChange + "\r\n";
+    channel->broadcastMessage(resonse, c);*/
 }

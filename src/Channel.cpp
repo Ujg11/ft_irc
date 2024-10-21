@@ -19,6 +19,12 @@ Channel::Channel(std::string name, std::string key, Client &admin)
 	this->topic = "";
 	this->invitedOnly = false;
 	this->topicRestricted = true;
+
+	modes['i'] = false;	 // Canal solo por invitacion
+	modes['t'] = false;  // Solo operadores pueden cambiar el topico
+	modes['l'] = false;	 // Limite de usuarios
+	modes['k'] = false;  // Canal protegido por contrasena
+
 	addAdmin(admin);
 	addClient(admin);
 }
@@ -224,6 +230,27 @@ void Channel::broadcastMessage(const std::string &message, const Client &c)
 		if (clients[i].getNickname() != c.getNickname())
 			send(clients[i].getFd(), message.c_str(), message.length(), 0);
 	}
+}
+
+const std::string Channel::getAllModes() const
+{
+	std::string ret = "+";
+	std::stringstream str;
+	str << this->maxClients;
+
+	if (modes.at('i') == true)
+		ret += 'i';
+	if (modes.at('t') == true)
+		ret += 't';
+	if (modes.at('l') == true)
+		ret += 'l';
+	if (modes.at('k') == true)
+		ret += 'k';
+	if (modes.at('l') == true)
+		ret += " " + str.str();
+	if (modes.at('k') == true)
+		ret += " " + this->getKey();
+	return ret;
 }
 
 std::string Channel::getTopic() const

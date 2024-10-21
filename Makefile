@@ -19,14 +19,14 @@ MAGENTA = \033[35m
 RED = \033[91m
 END_COLOR = \033[0m
 
-SRC = main.cpp src/Message.cpp src/Client.cpp src/Server.cpp src/Channel.cpp \
+SRC = main.cpp src/Message.cpp src/Client.cpp src/Server.cpp src/Channel.cpp src/Utils.cpp \
 		src/commands/Pass.cpp src/commands/Quit.cpp src/commands/Nick.cpp \
 		src/commands/Join.cpp src/commands/Kick.cpp src/commands/ClasString.cpp \
 		src/commands/Privmsg.cpp src/commands/Topic.cpp src/commands/Invite.cpp \
 		src/commands/Part.cpp src/commands/Mode.cpp src/commands/Who.cpp
 		
 
-INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp \
+INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp inc/Utils.hpp \
 		inc/commands/Commad.hpp inc/commands/Join.hpp inc/commands/Kick.hpp \
 		inc/commands/Quit.hpp inc/commands/Pass.hpp inc/commands/Nick.hpp \
 		inc/commands/ClasString.hpp src/commands/Privmsg.hpp src/commands/Topic.hpp \
@@ -36,17 +36,6 @@ INC = inc/Message.hpp inc/Client.hpp inc/Server.hpp inc/Channel.hpp \
 OBJECTS = $(SRC:.cpp=.o)
 
 all: banner $(NAME)
-
-#banner:
-#	@echo  "$(MAGENTA)\n"
-#	@echo  " _____   _____    _____ "
-#	@echo  "|_   _| |  __ \  / ____| "
-#	@echo  "  | |   | |__) | | | "
-#	@echo  "  | |   |  _  /  | | "
-#	@echo  "  | |   | | \ \  | |___ "
-#	@echo  "|_____| | |  \_\ \_____| "
-#	@echo  "\n$(END_COLOR)\n"
-
 
 banner:
 	@echo  "$(MAGENTA)\n"

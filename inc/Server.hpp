@@ -30,6 +30,7 @@
 # include "../inc/Message.hpp"
 # include "../inc/Client.hpp"
 # include "../inc/Channel.hpp"
+# include "../inc/Utils.hpp"
 # include "../inc/commands/Command.hpp"
 # include "../inc/commands/Quit.hpp"
 # include "../inc/commands/Pass.hpp"
@@ -100,6 +101,8 @@ class Server
 		void removeClientFromChannel(Client &client, Channel &channel);
 
 		std::string getServerName() const;
+
+		void sendResponse(int client_fd, const std::string& response);
 
 		/* TERMINO LO DE ANTHONY ⬆ */
 		

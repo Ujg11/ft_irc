@@ -527,3 +527,12 @@ const std::vector<Client> Server::getClients() const
 {
 	return (clients);
 }
+
+void Server::sendResponse(int client_fd, const std::string& response)
+{
+	std::string response_crlf = convertToCRLF(response);
+	if (send(client_fd, response_crlf.c_str(), response_crlf.size(), 0) == -1)
+	{
+		std::cerr << "Error: Failed to send response to client. (fd " << client_fd << ")." << std::endl;
+	}
+}

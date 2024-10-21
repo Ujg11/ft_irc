@@ -23,6 +23,8 @@ class Channel
 		std::vector<Client> admins;
 		std::vector<Client> clients;
 
+		std::map<char, bool> modes;
+
 		std::vector<std::string> invitedClients;  // Lista de clientes invitados
 		bool invitedOnly; // Flag para indicar si el canal es solo para invitados
 		size_t maxClients; // Límite máximo de usuarios en el canal
@@ -61,6 +63,9 @@ class Channel
 		bool isFull() const;
 		std::string getKey() const;
 		void broadcastMessage(const std::string &message, const Client &c);
+
+		const std::string getAllModes() const; // recien agregado;
+
 		std::string getTopic() const;
 
 		Client* getClientByName(const std::string &nickname);
