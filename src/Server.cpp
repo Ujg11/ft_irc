@@ -233,7 +233,9 @@ void Server::processMessage(Client &cliente)
 		{
 			message.sendHandShake(cliente);
 			cliente.handShake = true;
-			std::cout << "HandShake done in client <" << cliente.getFd() << ">" << std::endl; 
+			std::cout << "HandShake done in client <" << cliente.getFd() << ">" << std::endl;
+			std::string handshake2 = ":" + getServerName() + " 005 " + cliente.getNickname() + " NETWORK=" + getServerName() +"\r\n";
+			message.sendMessage(cliente, handshake2);
 		}	
 	}
 }

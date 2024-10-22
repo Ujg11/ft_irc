@@ -406,7 +406,7 @@ void Channel::setMaxClients(size_t maxUsers)
 
 void Channel::removeUserLimit()
 {
-	maxClients = 0;
+	maxClients = 10000;
 }
 
 /*void Channel::addAdmin(const Client &client)

@@ -14,7 +14,7 @@
 # include "../../inc/Channel.hpp"
 
 # define RPL_CHANNELMODES(servername, nickname, channel, flag) \
-            (std::string(":" + servername + " 324 " + nickname + " " + channel + " " + modes))
+            (std::string(":" + servername + " 324 " + nickname + " " + channel + " " + modes)) // esto esta ok
 
         /* Controla que los usuarios sean OP(operadores - admin)
             MODE tendra los siguientes modos(modificaciones):
@@ -51,6 +51,7 @@ void Mode::execute(Server &server, Client &c, std::vector<std::string> args)
         std::string response = "MODE " + channelName + " " + modes + "\r\n";
 
         server.sendResponse(c.getFd(), RPL_CHANNELMODES(server.getServerName(), c.getNickname(), channelName, modes));
+        std::cout << "Viene del mode excute: " << RPL_CHANNELMODES(server.getServerName(), c.getNickname(), channelName, modes) << std::endl;
         return ;
     }
 
@@ -271,11 +272,33 @@ void Mode::handleOperatorMode(Channel *channel, bool addMode, Server &server, Cl
 
 void Mode::broadcastModeChange(Server &server, Client &c, const std::string &channelName, const std::string &modeChange)
 {
-    std::string message = server.getServerName() + " MODE " + channelName + " " + modeChange  + "\r\n";
     Channel *channel = server.getChannel(channelName);
+    std::string message = server.getServerName() + " MODE " + channelName + " " + modeChange  + "\r\n";
+    //":" + servername + " 324 " + nickname + " " + channel + " " + modes)
+    std::string message2 = ":" + server.getServerName() + " 324 " + c.getNickname() + " " + channelName + " " + modeChange + "\r\n";
+
+    /*
+    ESTO SE PUEDE ELIMINAR ES SOLO PARA VER LA COMPOSICION DEL RPL_CHANNELMODES
+    
+    // Si solo se pasa el nombre del canal, mostrar los modos actuales
+    if (args.size() == 1)
+    {
+        std::string channelName = channel->getName();
+        std::string modes = channel->getAllModes();
+
+        std::string response = "MODE " + channelName + " " + modes + "\r\n";
+
+        server.sendResponse(c.getFd(), RPL_CHANNELMODES(server.getServerName(), c.getNickname(), channelName, modes));
+        std::cout << "Viene del mode excute: " << RPL_CHANNELMODES(server.getServerName(), c.getNickname(), channelName, modes) << std::endl;
+        return ;
+    }
+    */
+
     if (channel)
     {
-        channel->broadcastMessage(message, c);
+        server.message.sendMessage(c, message2);
+        std::cout << "Mensaje enviado al cliente: " << c.getNickname() << std::endl;
+        std::cout << "Mensaje envial al canal: " << channelName << std::endl;
     }
 
     /*Channel *channel = server.getChannel(channelName);
